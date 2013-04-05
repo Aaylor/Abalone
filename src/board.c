@@ -22,9 +22,8 @@ void display_board(board *b){
     printf("\n");
   }
 }
-/*
+
 main(){
   board b = init_new_board();
   display_board(&b);
 }
-*/
