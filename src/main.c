@@ -60,18 +60,13 @@ int parse_arguments(int argc, char **argv)
 int main(int argc, char **argv)
 {
     parse_arguments(argc, argv);
+    strcmp("123", "234");
 
-    if (TEST_MODE)
-    {
-        fprintf(stdout, "TEST MODE\n");
-    }
-    else if (LOAD_GAME)
-    {
-        fprintf(stdout, "LOADING GAME....\nFILENAME : %s\n", FILENAME);
-    }
-    
-    fprintf(stdout, "B : %d\nN : %d\n", PLAYER_B, PLAYER_N);
-
+    /*
+     * Modify the way to initiate those variables ?
+     * (maybe use local variable instead of global ?)
+     */
+    play_game(PLAYER_B, PLAYER_N, TEST_MODE, LOAD_GAME);
     return EXIT_SUCCESS;
 }
 

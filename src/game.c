@@ -1,9 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "game.h"
 
-int main(int argc, char *argv[])
+int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
 {
+    /*  Test mode will be included after... */
 
-    return EXIT_SUCCESS;
+    board *game_board = (board *)malloc(sizeof(board));
+
+    if (load_game)
+    {
+        /*  Load the game_board and every game information here ... */
+    }
+    else
+    {
+        init_board(game_board);
+    }
+
+    display_board(game_board);
+    return 0;
 }
 

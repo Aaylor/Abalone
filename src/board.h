@@ -1,6 +1,8 @@
 #ifndef H_BOARD
 #define H_BOARD
 
+#include "utility.h"
+
 typedef struct
 {
     char tab[BOARD_LENGTH][BOARD_LENGTH];

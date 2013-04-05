@@ -1,7 +1,7 @@
-SOURCES=src/Main.c
+SOURCES=src/ai.c src/board.c src/game.c src/interface.c src/main.c
 OBJECTS=$(SOURCES:.c=.o)
-CFLAGS= -std=c89 -Wall -Wextra
-EXECUTABLE=bin/project_name
+CFLAGS= -std=c89 -Wall -Wextra -ansi -g
+EXECUTABLE=bin/abalone
 
 $(EXECUTABLE): $(OBJECTS)
 	gcc -o $(EXECUTABLE) $(OBJECTS)

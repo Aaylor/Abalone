@@ -1,5 +1,5 @@
-#ifndef FILENAME
-#define FILENAME
+#ifndef H_INTERFACE
+#define H_INTERFACE
 
 #endif
 

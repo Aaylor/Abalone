@@ -2,6 +2,7 @@
 #define H_MAIN
 
 #include "utility.h"
+#include "game.h"
 
 /*
  *  parse every arguments given by the user when starting the program, where :
