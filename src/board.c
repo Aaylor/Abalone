@@ -23,7 +23,9 @@ void display_board(board *b){
   }
 }
 
+/*
 main(){
   board b = init_new_board();
   display_board(&b);
 }
+*/
