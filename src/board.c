@@ -47,12 +47,12 @@ board *init_board(board*b){
 
 /* Affiche le plateau */
 void display_board(board *b){
-  //Partie haute
+  /*Partie haute*/
   printf("       ____________\n");
   char i;
   int j;
   for(i='I'; i >= 'A';i--){
-    //Partie droite du plateau
+    /*Partie droite du plateau*/
     if(i == 'I') printf("    I / ");
     else if(i == 'H') printf("   H / ");
     else if(i == 'G') printf("  G / ");
@@ -62,12 +62,12 @@ void display_board(board *b){
     else if(i == 'C') printf("  C \\ ");
     else if(i == 'B') printf("   B \\ ");
     else if(i == 'A') printf("    A \\ ");
-    //Dessin du corps du plateau
+    /*Dessin du corps du plateau*/
     for(j=1; j <= 9; j++){
       if(b->tab[c_to_key(i)][i_to_key(j)] != '0')
 	printf("%c ", b->tab[c_to_key(i)][i_to_key(j)]);
     }
-    //Partie gauche du plateau
+    /*Partie gauche du plateau*/
     if(i<= 'I' && i >= 'F') printf(" \\ \n");
     else if (i == 'E') printf(" | \n");
     else if (i == 'D') printf(" / \n");
@@ -75,7 +75,7 @@ void display_board(board *b){
     else if (i == 'B') printf(" / 8\n");
     else if (i == 'A') printf(" / 7\n");
   }
-  //Partie basse
+  /*Partie basse*/
   printf("       ------------ 6\n           1 2 3 4 5\n");
 }
 
