@@ -1,12 +1,14 @@
 #include "utility.h"
 #include "board.h"
 
+//Créer et renvoie un plateau initialisé
 board create_new_board(){
   board b;
   init_board(&b);
   return b;
 }
 
+//Initialise le board dont le pointeur est en parametre
 board *init_board(board*b){
   //Creation du tableau
   char i;
@@ -23,7 +25,7 @@ board *init_board(board*b){
 
   //On pose les pieces
   //Piece B
-  for(i='A'; i <='B'; i++){
+  for(i='A'; i <='B'; i++){ //Les lignes A et B sont totalement à remplir
     for(j=min_col(i); j <= max_col(i); j++){
       b->tab[c_to_key(i)][i_to_key(j)] = 'B';
     }
@@ -32,7 +34,7 @@ board *init_board(board*b){
   b->tab[c_to_key('C')][i_to_key(4)] = 'B';
   b->tab[c_to_key('C')][i_to_key(5)] = 'B';
   //Piece N
-  for(i='H'; i <='I'; i++){
+  for(i='H'; i <='I'; i++){ //Les lignes H et I sont totalement à remplir
     for(j=min_col(i); j <= max_col(i); j++){
       b->tab[c_to_key(i)][i_to_key(j)] = 'N';
     }
@@ -43,6 +45,7 @@ board *init_board(board*b){
   return b;
 }
 
+//Affiche le plateau
 void display_board(board *b){
   int i, j;
   for(i = c_to_key('A'); i <= c_to_key('I'); i++){
@@ -53,7 +56,7 @@ void display_board(board *b){
   }
 }
 
-//min_line renvoie la cle de l'element minimal de la ligne l (la CLE, pas l'indice de tab)
+//min_col renvoie le numero de l'element minimal de la ligne l (la numero, pas l'indice de tab)
 int min_col(char l){
   l = c_to_key(l);
   if(l>=c_to_key('A') && l<=c_to_key('E'))
@@ -66,9 +69,10 @@ int min_col(char l){
     return 4;
   else if (l == c_to_key('I'))
     return 5;
+  return -1;
 }
 
-//max_line renvoie la cle de l'element maximal de la ligne l (la CLE, pas l'indice de tab)
+//max_col renvoie le numero de l'element maximal de la ligne l (le numero, pas l'indice de tab)
 int max_col(char l){
   l = c_to_key(l);
   if(l==c_to_key('A'))
@@ -81,11 +85,13 @@ int max_col(char l){
     return 8;
   else if (l == c_to_key('E') || l==c_to_key('F')|| l==c_to_key('G') || l==c_to_key('H') || l==c_to_key('I'))
     return 9;
+  return -1;
 }
 
-/*
-main(){
+
+int main(){
   board b = create_new_board();
   display_board(&b);
+
+  return 0;
 }
-*/
