@@ -3,6 +3,13 @@
 
 #include "utility.h"
 
+/*
+ *  parse every arguments given by the user when starting the program, where :
+ *      -B <type> give the type (human or robot) to the white player
+ *      -N <type> give the type (human or robot) to the black player
+ *      -c <filename> load the game from the file given by the user
+ *      -t use test mode
+ */
 int parse_arguments(int, char **);
 
 #endif

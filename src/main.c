@@ -1,6 +1,6 @@
 #include "main.h"
 
-int PLAYER_B = 0, PLAYER_N = 0, TEST_MODE = 0, LOAD_GAME = 0;
+int PLAYER_B = 1, PLAYER_N = 1, TEST_MODE = 0, LOAD_GAME = 0;
 char *FILENAME;
 
 int parse_arguments(int argc, char **argv)
@@ -21,16 +21,16 @@ int parse_arguments(int argc, char **argv)
             else if (str_cmp(*(argv + position), "robot"))
             {
                 if (c == 'B')
-                    PLAYER_B = 1;
+                    PLAYER_B = 0;
                 else
-                    PLAYER_N = 1;
+                    PLAYER_N = 0;
             }
             else if (str_cmp(*(argv + position), "humain"))
             {
                 if (c == 'B')
-                    PLAYER_B = 0;
+                    PLAYER_B = 1;
                 else
-                    PLAYER_N = 0;
+                    PLAYER_N = 1;
             }
             else
             {
