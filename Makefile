@@ -9,5 +9,8 @@ $(EXECUTABLE): $(OBJECTS)
 %.o : %.c
 	gcc -c $(CFLAGS) $< -o $@
 
+launch:
+	./bin/abalone
+
 clean:
 	rm -f $(EXECUTABLE) $(OBJECTS)
