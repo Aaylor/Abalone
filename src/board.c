@@ -59,8 +59,9 @@ int max_col(char l){
     return 9;
 }
 
-
+/*
 main(){
   board b = init_new_board();
   display_board(&b);
 }
+*/
