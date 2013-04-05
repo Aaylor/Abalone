@@ -7,6 +7,6 @@ typedef struct
 } board;
 
 board init_new_board();
-char *display_board(board *b);
+void display_board(board *b);
 
 #endif
