@@ -60,7 +60,8 @@ int parse_arguments(int argc, char **argv)
 int main(int argc, char **argv)
 {
     parse_arguments(argc, argv);
-    strcmp("123", "234");
+
+    fprintf(stdout, "\033cBienvenue dans le jeu Abalone.\n`TODO : AFFICHER LES INFORMATIONS SUR LA PARTIE... (Players, Test_mode...)\n\n");
 
     /*
      * Modify the way to initiate those variables ?

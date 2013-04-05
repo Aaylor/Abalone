@@ -35,6 +35,7 @@
 .project
 .setting
 build/*
+bin/*
 javadoc/*
 
 #######################
