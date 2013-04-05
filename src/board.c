@@ -8,7 +8,6 @@ board init_new_board(){
   int j;
   //On initialise toutes les cases à ' ' si elle n'existe pas, '.' sinon
   for(i='A'; i <= 'I';i++){
-    printf("%c, min : %d, max : %d\n", i, min_col(i), max_col(i));
     for(j=1; j <= 9; j++){
       if(j < min_col(i) || j > max_col(i))
 	b.tab[c_to_key(i)][i_to_key(j)] = '0';
@@ -16,6 +15,27 @@ board init_new_board(){
 	b.tab[c_to_key(i)][i_to_key(j)] = '.';
     }
   }
+
+  //On pose les pieces
+  //Piece B
+  for(i='A'; i <='B'; i++){
+    for(j=min_col(i); j <= max_col(i); j++){
+      b.tab[c_to_key(i)][i_to_key(j)] = 'B';
+    }
+  }
+  b.tab[c_to_key('C')][i_to_key(3)] = 'B';
+  b.tab[c_to_key('C')][i_to_key(4)] = 'B';
+  b.tab[c_to_key('C')][i_to_key(5)] = 'B';
+  //Piece N
+  for(i='H'; i <='I'; i++){
+    for(j=min_col(i); j <= max_col(i); j++){
+      printf("%d %d\n", c_to_key(i),i_to_key(j));
+      b.tab[c_to_key(i)][i_to_key(j)] = 'N';
+    }
+  }
+  b.tab[c_to_key('G')][i_to_key(5)] = 'N';
+  b.tab[c_to_key('G')][i_to_key(6)] = 'N';
+  b.tab[c_to_key('G')][i_to_key(7)] = 'N';
   return b;
 }
 
@@ -59,9 +79,8 @@ int max_col(char l){
     return 9;
 }
 
-/*
+
 main(){
   board b = init_new_board();
   display_board(&b);
 }
-*/
