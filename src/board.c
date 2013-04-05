@@ -47,13 +47,36 @@ board *init_board(board*b){
 
 /* Affiche le plateau */
 void display_board(board *b){
-  int i, j;
-  for(i = c_to_key('A'); i <= c_to_key('I'); i++){
-    for(j=i_to_key(1); j <=i_to_key(9); j++){
-      printf("%c ", b->tab[i][j]);
+  //Partie haute
+  printf("       ____________\n");
+  char i;
+  int j;
+  for(i='I'; i >= 'A';i--){
+    //Partie droite du plateau
+    if(i == 'I') printf("    I / ");
+    else if(i == 'H') printf("   H / ");
+    else if(i == 'G') printf("  G / ");
+    else if(i == 'F') printf(" F / ");
+    else if(i == 'E') printf("E | ");
+    else if(i == 'D') printf(" D \\ ");
+    else if(i == 'C') printf("  C \\ ");
+    else if(i == 'B') printf("   B \\ ");
+    else if(i == 'A') printf("    A \\ ");
+    //Dessin du corps du plateau
+    for(j=1; j <= 9; j++){
+      if(b->tab[c_to_key(i)][i_to_key(j)] != '0')
+	printf("%c ", b->tab[c_to_key(i)][i_to_key(j)]);
     }
-    printf("\n");
+    //Partie gauche du plateau
+    if(i<= 'I' && i >= 'F') printf(" \\ \n");
+    else if (i == 'E') printf(" | \n");
+    else if (i == 'D') printf(" / \n");
+    else if (i == 'C') printf(" / 9\n");
+    else if (i == 'B') printf(" / 8\n");
+    else if (i == 'A') printf(" / 7\n");
   }
+  //Partie basse
+  printf("       ------------ 6\n           1 2 3 4 5\n");
 }
 
 /* min_col renvoie le numero de l'element minimal de la ligne l (la numero, pas l'indice de tab) */
