@@ -8,7 +8,7 @@ typedef struct
 
 board init_new_board();
 void display_board(board *b);
-int max_col(char l);
 int min_col(char l);
+int max_col(char l);
 
 #endif
