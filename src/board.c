@@ -113,58 +113,11 @@ int max_col(char l){
   return -1;
 }
 
-/*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
-/*move_is_possible renvoie pour l'instant :
-  _1 si le coup est possible
-  _0 pas jouable pour des raisons inconnues
-  _-1 cases non adjacentes
-  _-2 cases non alignees
-  _-3 cases identiques
-  Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
-  ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
-
-
-int move_is_possible(board *b, char **tabMove, int tabLen){
-  //POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');
-  int i, j;
-
-  /*LA COMMANDE A-T-ELLE UN SENS ?*/
-  /*Les cases de départ ne doivent pas etre vide*/
-  for(i = 0; i < tabLen/2; i++){
-    if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] == '.')
-      return -1;
-  }
-  /*Les cases de depart ne doivent pas comporter des cases identiques, idem pour les cases d'arrivee*/
-  for(i = 0; i < tabLen; i++){
-    for(j = i + 1;((i < tabLen/2) && (j < tabLen/2)) || ((i >= tabLen/2) && (j < tabLen)); j++){
-      if(!(strcmp(tabMove[i], tabMove[j]))) 
-	return -2;
-    }
-  } 
-  /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
-  if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
-    return -3;
-  /*Les cases de depart ne doivent pas comporter des cases identiques, idme pour les cases d'arrivee*/
-  if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2) ==0)
-    return -4;
-
-  /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
-  /*DEPLACEMENT LATERAL*/
-  /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/
-  if(tabLen == 2 || marbles_alignement(tabMove, tabLen))
-    for(i=tabLen/2; i < tabLen; i++)
-      if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
-	return -5;
-  /*DEPLACEMENT EN LIGNE*/
-
-  return 1;
-}
-
 /*Renvoie 1 si les billes du tableau sont adjacentes, renvoie 0 sinon*/
 int marbles_are_adjacent(char **tab, int tabLen){
   if(tabLen == 1)
     return 1;
-  else{
+  else{ 
     int i;
     for(i=0; i < tabLen; i++){
       if(i < (tabLen - 1) && (abs(tab[i][0]-tab[i+1][0]) >1 || abs(tab[i][1]-tab[i+1][1]) >1)) 
@@ -207,7 +160,63 @@ int marbles_alignement(char **tab, int tabLen){
   }
 }
 
-/*
+/*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
+/*move_is_possible renvoie pour l'instant :
+  _1 si le coup est possible
+  _0 pas jouable pour des raisons inconnues
+  _-1 cases non adjacentes
+  _-2 cases non alignees
+  _-3 cases identiques
+  Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
+  ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
+
+
+int move_is_possible(board *b, char **tabMove, int tabLen){
+  //POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');
+  int i, j;
+
+  /*LA COMMANDE A-T-ELLE UN SENS ?*/
+  /*Les cases de départ ne doivent pas etre vide*/
+  for(i = 0; i < tabLen/2; i++){
+    if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] == '.')
+      return -1;
+  }
+  /*Les cases de depart ne doivent pas comporter des cases identiques, idem pour les cases d'arrivee*/
+  for(i = 0; i < tabLen; i++){
+    for(j = i + 1;((i < tabLen/2) && (j < tabLen/2)) || ((i >= tabLen/2) && (j < tabLen)); j++){
+      if(!(strcmp(tabMove[i], tabMove[j]))) 
+	return -2;
+    }
+  } 
+  /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
+  if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
+    return -3;
+  /*Les cases de depart ne doivent pas comporter des cases identiques, idme pour les cases d'arrivee*/
+  if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2) ==0)
+    return -4;
+
+  /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
+  /*DEPLACEMENT LATERAL*/
+  /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/
+  if(tabLen == 2 || marbles_alignement(tabMove, tabLen) != 0)
+    for(i=tabLen/2; i < tabLen; i++)
+      if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
+	return -5;
+ 
+  /*DEPLACEMENT EN LIGNE*/
+  /*Les conditions d'acceptation :*/
+  /*La case d'arrivee est libre, dans ce cas le coup est possible*/
+  for(i=tabLen/2; i <= tabLen; i++){
+    if(i==tabLen) return 1;
+    if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
+      break ;
+  }
+  /*Il ne manque plus qu'à verifier que le nombre de cases de depart est suffisant pour pousser la bille contenue dans la case d'arrivée (si c'est vide derriere elle ou non
+
+    /*Aucun soucis detecté a priori */
+  return 1;
+}
+
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -230,4 +239,3 @@ int main(){
 
   return 0;
 }
-*/
