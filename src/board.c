@@ -188,17 +188,26 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
 	return -2;
     }
   } 
+  for(i = 0; i < tabLen/2; i++){
+    for(j = tabLen/2; j< tabLen; j++){
+      if(!(strcmp(tabMove[i], tabMove[j]))) 
+	return -2;
+    }
+  } 
   /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
   if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
     return -3;
   /*Les cases de depart ne doivent pas comporter des cases identiques, idme pour les cases d'arrivee*/
   if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2) ==0)
     return -4;
-
+  
   /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
   /*DEPLACEMENT LATERAL*/
-  /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/
-  if(tabLen == 2 || marbles_alignement(tabMove, tabLen) != 0)
+  /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/  
+  if(tabLen == 2)
+    if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.')
+      return 1;
+  if(tabLen > 2 &&  marbles_alignement(tabMove, tabLen) != 0)
     for(i=tabLen/2; i < tabLen; i++)
       if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
 	return -5;
@@ -211,9 +220,39 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
     if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
       break ;
   }
-  /*Il ne manque plus qu'à verifier que le nombre de cases de depart est suffisant pour pousser la bille contenue dans la case d'arrivée (si c'est vide derriere elle ou non
+  /*Il ne manque plus qu'à verifier que le nombre de cases de depart est suffisant pour pousser la bille contenue dans la case d'arrivée (si c'est vide derriere elle ou non*/
+  if(tabLen==2){
+    /*On va considerer que la case de depart est la case du joueur*/
+    if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.')){
+      char joueur = b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'];
+      char adversaire = (joueur = 'B') ? 'N' : 'B';
+      /*On va compter les case dans la direction des pieces du joueur puis de l'adversaire dans le sens donné par le coup, jusqu'à rencontrer une case vide*/
+      /*On definit la variation de position de la case de depart et d'arrivee pour definir la direction*/
+      int variationX = tabMove[1][1] - tabMove[0][1], variationY = tabMove[1][0] - tabMove[0][0];
+      int originY = c_to_key(tabMove[0][0]), originX =  tabMove[0][1] - '1';
+      i = 0; int compteur = 0; int compteurJ = 0; int compteurA = 0;
 
-    /*Aucun soucis detecté a priori */
+      while((b->tab[originY + i*variationY][originX + i*variationX] == 'B' || b->tab[originY + i*variationY][originX + i*variationX] == 'N') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
+	//printf("%c%c -> %c\n", tabMove[0][0] + i*variationY, tabMove[0][1] + i*variationX, b->tab[originY + i*variationY][originX + i*variationX]);
+	if (b->tab[originY + i*variationY][originX + i*variationX] == joueur)
+	  compteurJ++;
+	else if (b->tab[originY + i*variationY][originX + i*variationX] == adversaire)
+	  compteurA++;
+	i++;
+      }
+      printf("Joueur : %d Adversaire : %d", compteurJ, compteurA);
+      if(compteurA > 2) return -7;/*Trop de bille adverses*/
+      if(compteurJ > 3) return -8;/*Trop de bille du joueur*/
+      if(compteurJ == compteurA) return -9;/*Egalite des bille*/
+      if(compteurJ < compteurA) return -10; /*+ de bille adverses*/
+      return 1;/*Pas de soucis*/
+    }
+
+    /*Cas qui n'a pas été traité*/
+    return -666;
+  }
+
+  /*Aucun soucis detecté a priori */
   return 1;
 }
 
@@ -222,7 +261,7 @@ int main(){
   display_board(&b);
 
   //Test coup 1
-  char *coups1[2] = {"B3","C3"};
+  char *coups1[2] = {"C3","C3"};
   printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
   //printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups1, 2));
   //printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups1, 2));
@@ -232,7 +271,7 @@ int main(){
 
   //Test coup 2
   char *coups2[6] = {"A1","A2","A3","B1","B2","B3"};
-  printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
+  //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
   //printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups2, 3));
   //printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups2, 3));
  
