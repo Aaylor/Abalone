@@ -207,7 +207,7 @@ int marbles_alignement(char **tab, int tabLen){
   }
 }
 
-
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -230,3 +230,4 @@ int main(){
 
   return 0;
 }
+*/
