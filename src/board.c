@@ -240,7 +240,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
 	  compteurA++;
 	i++;
       }
-      printf("Joueur : %d Adversaire : %d", compteurJ, compteurA);
+      /*printf("Joueur : %d Adversaire : %d", compteurJ, compteurA);*/
       if(compteurA > 2) return -7;/*Trop de bille adverses*/
       if(compteurJ > 3) return -8;/*Trop de bille du joueur*/
       if(compteurJ == compteurA) return -9;/*Egalite des bille*/
