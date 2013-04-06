@@ -13,5 +13,7 @@ board *init_board(board*b);
 void display_board(board *b);
 int min_col(char l);
 int max_col(char l);
+int marbles_alignement(char **tab, int tabLen);
+int marbles_are_adjacent(char **tab, int tabLen);
 
 #endif

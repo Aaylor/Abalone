@@ -5,9 +5,9 @@
 
 /*  Créer et renvoie un plateau initialisé  */
 board create_new_board(){
-    board b;
-    init_board(&b);
-    return b;
+  board b;
+  init_board(&b);
+  return b;
 }
 
 /*  Initialise le board dont le pointeur est en parametre   */
@@ -119,25 +119,24 @@ int max_col(char l){
   _0 si les cases ne sont pas adjacentes
   _-1 si les cases de depart sont identiques ou si les cases d'arrivee sont identiques
   _-2 si le coups n'est pas possible pour diverse raisons
-Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
-ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
+  Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
+  ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
+
+
 int move_is_possible(board *b, char **tabMove, int tabLen){
   int i, j;
   /*Testons si les cases de depart et d'arrivee sont adjacentes*/
-  for(i=0; i < tabLen/2; i++){
-    if(abs(tabMove[i][0]-tabMove[i+tabLen/2][0]) >1 || abs(tabMove[i][1]-tabMove[i+tabLen/2][1]) >1) 
-      return 0;
-  }
-  /*Testons si des cases de depart son identiques, idem pour les cases d'arrivee*/
+  /*Testons si des cases de depart son identiques, idem pour les cases d'arrivee*//*
   for(i = 0; i < tabLen; i++){
     for(j = i + 1;((i < tabLen/2) && (j < tabLen/2)) || ((i >= tabLen/2) && (j < tabLen)); j++){
       if(!(strcmp(tabMove[i], tabMove[j]))) return -1;
     }
-  }
-
+    }*/
   /*DEPLACEMENT LATERAL*/
-  /*Cas ou : deplacement d'une seule bille, ou bille dans le même alignement avant et apre
-  if(len
+  /*Cas ou : deplacement d'une seule bille, ou billes dans le même alignement avant et apres */
+  /*
+  if(tabLen = 2 || is_in_the_same_alignment){
+  }*/
 
   /*DEPLACEMENT EN LIGNE*/
 
@@ -145,23 +144,76 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   return 1;
 }
 
-int is_in_the_same_alignment(char **moveTab, int tabLen){
-
+/*Renvoie 1 si les billes du tableau sont adjacentes, renvoie 0 sinon*/
+int marbles_are_adjacent(char **tab, int tabLen){
+  if(tabLen == 1)
+    return 1;
+  else{
+    int i;
+    for(i=0; i < tabLen; i++){
+      if(i < (tabLen - 1) && (abs(tab[i][0]-tab[i+1][0]) >1 || abs(tab[i][1]-tab[i+1][1]) >1)) 
+	return 0;
+    }
+    return 1;
+  }
 }
+
+/*Renvoie 0 si les billes du tableau ne sont pas dans le même alignement, renvoie 1 si elle sont alignee horizontalement, 2 si elle sont en "\" et 3 si elle sont en "\" 
+Ainsi si on veut tester si des billes sont juste alignée ou fait if(marble_alignement(..))*/
+int marbles_alignement(char **tab, int tabLen){
+  if(tabLen < 3)
+    return 1;
+  else{
+    int i;
+    /*Les billes sont dans une direction horizontale*/
+    for(i=0; i < tabLen; i++){
+      if(i==tabLen-1) return 1;
+      else if(tab[i][0] != tab[i+1][0]){
+	break;
+      }
+    }
+    /*En "\" */
+    for(i=0; i < tabLen; i++){
+      if(i==tabLen-1) return 2;
+      else if(tab[i][1] != tab[i+1][1]){
+	break;
+      }
+    }
+
+    /*En / */
+    for(i=0; i < tabLen; i++){
+      if(i==tabLen-1) return 3;
+      else if(tab[i][0] - tab[i+1][0] != tab[i][1] - tab[i+1][1]){
+	break;
+      }
+    }
+
+    /*Finalement elles ne sont pas alignee*/
+    return 0;
+  }
+}
+
 /*
 int main(){
-board b = create_new_board();
-display_board(&b);
+  board b = create_new_board();
+  display_board(&b);
 
-//Test coup 1
- char *coups1[2] = {"B3","B4"};
- //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
+  //Test coup 1
+  char *coups1[2] = {"B3","B2"};
+  //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
+  //printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups1, 2));
+  //printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups1, 2));
 
- //Test coup 2
- char *coups2[6] = {"B3","B4","B5","C3","C4","C5"};
- printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
+
+  putchar('\n');
+
+  //Test coup 2
+  char *coups2[6] = {"A1","B2","C5","C3","C4","C5"};
+  //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
+  printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups2, 3));
+  printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups2, 3));
  
 
-return 0;
+  return 0;
 }
 */
