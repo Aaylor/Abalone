@@ -256,6 +256,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   return 1;
 }
 
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -278,3 +279,4 @@ int main(){
 
   return 0;
 }
+*/
