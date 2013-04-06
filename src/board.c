@@ -1,5 +1,7 @@
 #include "utility.h"
 #include "board.h"
+#include <math.h>
+#include <string.h>
 
 /*  Créer et renvoie un plateau initialisé  */
 board create_new_board(){
@@ -112,14 +114,29 @@ int max_col(char l){
 }
 
 /*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
-/*move_is_possible renvoie 1 si le coup est possible, 0 sinon.
+/*move_is_possible renvoie pour l'instant :
+  _1 si le coup est possible
+  _0 si les cases ne sont pas adjacentes
+  _-1 si les cases de depart sont identiques ou si les cases d'arrivee sont identiques
+  _-2 si le coups n'est pas possible pour diverse raisons
 Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
 ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
-int move_is_possible(board *b, char **tabMove, int tabLength){
+int move_is_possible(board *b, char **tabMove, int tabLen){
+  int i, j;
   /*Testons si les cases de depart et d'arrivee sont adjacentes*/
-
+  for(i=0; i < tabLen/2; i++){
+    if(abs(tabMove[i][0]-tabMove[i+tabLen/2][0]) >1 || abs(tabMove[i][1]-tabMove[i+tabLen/2][1]) >1) 
+      return 0;
+  }
+  /*Testons si des cases de depart son identiques, idem pour les cases d'arrivee*/
+  for(i = 0; i < tabLen; i++){
+    for(j = i + 1;((i < tabLen/2) && (j < tabLen/2)) || ((i >= tabLen/2) && (j < tabLen)); j++){
+      if(!(strcmp(tabMove[i], tabMove[j]))) return -1;
+    }
+  }
   /*Testons si le coup est faisable par rapport au nombre de billes à deplacer*/ 
 
+  /*Aucun soucis detecte*/
   return 1;
 }
 
@@ -129,15 +146,14 @@ board b = create_new_board();
 display_board(&b);
 
 //Test coup 1
- char *coups1[2] = {"B3","D3"};
- printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
+ char *coups1[2] = {"B3","B4"};
+ //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
 
  //Test coup 2
- char *coups2[6] = {"B3","B4","B5","D3","D4","D5"};
+ char *coups2[6] = {"B3","B4","B5","C3","C4","C5"};
  printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
  
 
 return 0;
 }
-
 */
