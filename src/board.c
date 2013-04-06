@@ -136,7 +136,8 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   }
 
   /*DEPLACEMENT LATERAL*/
-
+  /*Cas ou : deplacement d'une seule bille, ou bille dans le même alignement avant et apre
+  if(len
 
   /*DEPLACEMENT EN LIGNE*/
 
@@ -147,7 +148,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
 int is_in_the_same_alignment(char **moveTab, int tabLen){
 
 }
-
+/*
 int main(){
 board b = create_new_board();
 display_board(&b);
@@ -163,3 +164,4 @@ display_board(&b);
 
 return 0;
 }
+*/
