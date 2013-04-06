@@ -114,8 +114,8 @@ int max_col(char l){
 /*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
 /*move_is_possible renvoie 1 si le coup est possible, 0 sinon.
 Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
-ex : {{B3}{D3}} ou {{B3},{B4},{D3},{D4}} ou encore {{B3},{B4},{B5},{D3},{D4},{D5}}*/
-int move_is_possible(board *b, char *tabMove, int tabLength}{
+ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
+int move_is_possible(board *b, char *tabMove, int tabLength){
   /*Testons si les cases de depart et d'arrivee sont adjacentes*/
 
   /*Testons si le coup est faisable par rapport au nombre de billes à deplacer*/ 
@@ -127,6 +127,14 @@ int move_is_possible(board *b, char *tabMove, int tabLength}{
 int main(){
 board b = create_new_board();
 display_board(&b);
+
+//Test coup 1
+ char *coups1[2] = {"B3","D3"};
+
+
+ //Test coup 2
+ char *coup1[6] = {"B3","B4","B5","D3","D4","D5"};
+ 
 
 return 0;
 }
