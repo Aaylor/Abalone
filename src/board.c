@@ -134,13 +134,20 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
       if(!(strcmp(tabMove[i], tabMove[j]))) return -1;
     }
   }
-  /*Testons si le coup est faisable par rapport au nombre de billes à deplacer*/ 
+
+  /*DEPLACEMENT LATERAL*/
+
+
+  /*DEPLACEMENT EN LIGNE*/
 
   /*Aucun soucis detecte*/
   return 1;
 }
 
-/*
+int is_in_the_same_alignment(char **moveTab, int tabLen){
+
+}
+
 int main(){
 board b = create_new_board();
 display_board(&b);
@@ -156,4 +163,3 @@ display_board(&b);
 
 return 0;
 }
-*/
