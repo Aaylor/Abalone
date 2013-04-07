@@ -207,10 +207,11 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   if(tabLen == 2)
     if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.')
       return 1;
-  if(tabLen > 2 &&  marbles_alignement(tabMove, tabLen) != 0)
+  if(tabLen > 2 &&  marbles_alignement(tabMove, tabLen) == 0){
     for(i=tabLen/2; i < tabLen; i++)
       if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
 	return -5;
+  }
  
   /*DEPLACEMENT EN LIGNE*/
   /*Les conditions d'acceptation :*/
@@ -245,7 +246,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
       if(compteurJ > 3) return -8;/*Trop de bille du joueur*/
       if(compteurJ == compteurA) return -9;/*Egalite des bille*/
       if(compteurJ < compteurA) return -10; /*+ de bille adverses*/
-      return 1;/*Pas de soucis*/
+      return 2;/*Pas de soucis*/
     }
 
     /*Cas qui n'a pas été traité*/
@@ -253,30 +254,70 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   }
 
   /*Aucun soucis detecté a priori */
-  return 1;
+  return 666;
+}
+
+do_move(board *b, char** tabMove, int tabLen){
+  /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
+  int j;
+  /*Calcul de la direction du mouvement*/
+  int variationX = tabMove[tabLen/2][1] - tabMove[0][1], variationY = tabMove[tabLen/2][0] - tabMove[0][0];
+  printf("Depart : %s, Arrivee : %s\n", tabMove[0], tabMove[tabLen/2]);
+  printf("Variation X : %d, Variation Y : %d\n", variationX, variationY);
+  /*Toutes les casesde depart son successivement geree*/
+  for (j=0; j < tabLen/2; j++){
+    int originY = c_to_key(tabMove[j][0]), originX =  tabMove[j][1] - '1';
+    /*On va derouler la ligne jusqu'au prochain vide*/
+    int i = 0;
+    char casePrecedente = '.', caseActuelle;
+    while((b->tab[originY + i*variationY][originX + i*variationX] != '.' && b->tab[originY + i*variationY][originX + i*variationX] != '0') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
+      caseActuelle = b->tab[originY + i*variationY][originX + i*variationX];
+      b->tab[originY + i*variationY][originX + i*variationX] = casePrecedente;
+      casePrecedente = caseActuelle;
+      i++;
+    }
+    /*Il ne manque plus qu'a verifier si la derniere case a ete ejectee ou atteri dans une case vide*/
+    if(b->tab[originY + i*variationY][originX + i*variationX] == '.' && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9))
+      b->tab[originY + i*variationY][originX + i*variationX] = casePrecedente;
+  }
 }
 
 /*
-int main(){
+
+  int main(){
   board b = create_new_board();
   display_board(&b);
-
+  
+  
   //Test coup 1
-  char *coups1[2] = {"C3","C3"};
-  printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups1, 2));
-  //printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups1, 2));
-  //printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups1, 2));
-
+  b.tab[c_to_key('E')][i_to_key(3)] = 'B';
+  b.tab[c_to_key('D')][i_to_key(3)] = 'B';
+  b.tab[c_to_key('F')][i_to_key(3)] = 'B';
+  b.tab[c_to_key('G')][i_to_key(3)] = 'B';
+  display_board(&b);
+  
+  char *coups1[6] = {"E3","F3"};
+  int move_possible = move_is_possible(&b, coups1, 2);
+  printf("Le coup est est il faisable ? %d\n", move_possible);
+  if(move_possible > 0){
+    do_move(&b, coups1, 2);
+    display_board(&b);
+  }
+  
 
   putchar('\n');
 
   //Test coup 2
-  char *coups2[6] = {"A1","A2","A3","B1","B2","B3"};
-  //printf("Le coup est est il faisable ? %d\n", move_is_possible(&b, coups2, 6));
-  //printf("Les billes sont elles adjacentes ? %d\n", marbles_are_adjacent(coups2, 3));
-  //printf("Les billes sont elles alignee ? %d\n", marbles_alignement(coups2, 3));
- 
-
+  b.tab[c_to_key('E')][i_to_key(3)] = 'B';
+  display_board(&b);
+  
+  char *coups2[6] = {"I1","I2","I3","D3","D4","D5"};
+  int move_possible = move_is_possible(&b, coups2, 6);
+  printf("Le coup est est il faisable ? %d\n", move_possible);
+  if(move_possible > 0){
+    do_move(&b, coups2, 6);
+    display_board(&b);
+  
   return 0;
-}
+  }
 */
