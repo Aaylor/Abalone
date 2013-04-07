@@ -161,16 +161,17 @@ int marbles_alignement(char **tab, int tabLen){
 }
 
 /*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
-/*move_is_possible renvoie pour l'instant :
-  _1 si le coup est possible
-  _0 pas jouable pour des raisons inconnues
-  _-1 cases non adjacentes
-  _-2 cases non alignees
-  _-3 cases identiques
-  Le coup est décrit dans tabCoup qui est de la forme {{depart1},...{arrive1},...}
-  ex : {"B3","D3"} ou {"B3","B4","D3","D4"} ou encore {"B3","B4","B5","D3","D4","D5"}*/
-
-
+/*move_is_possible renvoie :
+  _1 : Coups Lateral POSSIBLE, 2 : Coups en ligne POSSIBLE
+  _-1 : La case de depart est vide, -2 : Il y a des case identiques dans les case de depart ou d'arrivee
+  _-3 : Case de depart ou d'arrivee non adjacentes, -4 : Je crois que j'ai fais un test redondant
+  _-5 : Coups Lateral IMPOSSIBLE : car case d'arrivee non vide
+  _-7 : Coups Lateral IMPOSSIBLE : trop de billes adverses sur l'alignement
+  _-8 : Coups Lateral IMPOSSIBLE : trop de billes du joueurs sur l'alignement
+  _-9 : Coups Lateral IMPOSSIBLE : egalite de billes joueur et adverses dans l'alignement
+  _-10 : Coups Lateral IMPOSSIBLE : + de billes adverses que de bille du joueur dans l'alignement
+  _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
+*/
 int move_is_possible(board *b, char **tabMove, int tabLen){
   //POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');
   int i, j;
@@ -217,7 +218,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   /*Les conditions d'acceptation :*/
   /*La case d'arrivee est libre, dans ce cas le coup est possible*/
   for(i=tabLen/2; i <= tabLen; i++){
-    if(i==tabLen) return 1;
+    if(i==tabLen) return 2;
     if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
       break ;
   }
@@ -257,6 +258,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
   return 666;
 }
 
+/*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
 do_move(board *b, char** tabMove, int tabLen){
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
   int j;
@@ -281,10 +283,8 @@ do_move(board *b, char** tabMove, int tabLen){
       b->tab[originY + i*variationY][originX + i*variationX] = casePrecedente;
   }
 }
-
 /*
-
-  int main(){
+int main(){
   board b = create_new_board();
   display_board(&b);
   
@@ -312,12 +312,13 @@ do_move(board *b, char** tabMove, int tabLen){
   display_board(&b);
   
   char *coups2[6] = {"I1","I2","I3","D3","D4","D5"};
-  int move_possible = move_is_possible(&b, coups2, 6);
+  move_possible = move_is_possible(&b, coups2, 6);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
     do_move(&b, coups2, 6);
     display_board(&b);
+  }
   
   return 0;
-  }
+}
 */
