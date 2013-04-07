@@ -232,7 +232,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
       /*On definit la variation de position de la case de depart et d'arrivee pour definir la direction*/
       int variationX = tabMove[1][1] - tabMove[0][1], variationY = tabMove[1][0] - tabMove[0][0];
       int originY = c_to_key(tabMove[0][0]), originX =  tabMove[0][1] - '1';
-      i = 0; int compteur = 0; int compteurJ = 0; int compteurA = 0;
+      i = 0; int compteurJ = 0; int compteurA = 0;
 
       while((b->tab[originY + i*variationY][originX + i*variationX] == 'B' || b->tab[originY + i*variationY][originX + i*variationX] == 'N') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
 	//printf("%c%c -> %c\n", tabMove[0][0] + i*variationY, tabMove[0][1] + i*variationX, b->tab[originY + i*variationY][originX + i*variationX]);
@@ -259,7 +259,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
 }
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
-do_move(board *b, char** tabMove, int tabLen){
+void do_move(board *b, char** tabMove, int tabLen){
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
   int j;
   /*Calcul de la direction du mouvement*/
@@ -283,6 +283,7 @@ do_move(board *b, char** tabMove, int tabLen){
       b->tab[originY + i*variationY][originX + i*variationX] = casePrecedente;
   }
 }
+
 /*
 int main(){
   board b = create_new_board();
