@@ -173,7 +173,7 @@ int marbles_alignement(char **tab, int tabLen){
   _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
 */
 int move_is_possible(board *b, char **tabMove, int tabLen){
-  //POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');
+  /*POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');*/
   int i, j;
 
   /*LA COMMANDE A-T-ELLE UN SENS ?*/
@@ -235,7 +235,7 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
       i = 0; int compteurJ = 0; int compteurA = 0;
 
       while((b->tab[originY + i*variationY][originX + i*variationX] == 'B' || b->tab[originY + i*variationY][originX + i*variationX] == 'N') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
-	//printf("%c%c -> %c\n", tabMove[0][0] + i*variationY, tabMove[0][1] + i*variationX, b->tab[originY + i*variationY][originX + i*variationX]);
+	/*printf("%c%c -> %c\n", tabMove[0][0] + i*variationY, tabMove[0][1] + i*variationX, b->tab[originY + i*variationY][originX + i*variationX]);*/
 	if (b->tab[originY + i*variationY][originX + i*variationX] == joueur)
 	  compteurJ++;
 	else if (b->tab[originY + i*variationY][originX + i*variationX] == adversaire)
