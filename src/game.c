@@ -46,8 +46,8 @@ char **split_command(char *command, int *command_length)
         i++;
     }
 
-    free(token);
-    free(tmp_command);
+    free(token); token = NULL;
+    free(tmp_command); tmp_command = NULL;
 
     *command_length = i;
     return splitted_command;
@@ -108,7 +108,7 @@ char **rework_move(char *command, int *length)
             j++;
         }
 
-        free(splitted_command);
+        free(splitted_command); splitted_command = NULL;
 
         *length = 2 * max_length;
         return reworked_command;
@@ -136,13 +136,15 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     {
         int length = 0;
         char current_player = (coup & 1 ? 'B' : 'N');
-        char *prompt = (current_player == 'B' ? PROMPT_B : PROMPT_N);
 
         if ( (current_player == 'B' && b_player_statut) ||
              (current_player == 'N' && n_player_statut))
         {
             if (!test_mode)
+            {
+                char *prompt = (current_player == 'B' ? PROMPT_B : PROMPT_N);
                 fprintf(stdout, "#%d %s", coup, prompt);
+            }
             if (fscanf(stdin, "%s", command) == EOF)
                 return 1;
         }
@@ -152,7 +154,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             continue;
         }
 
-        
+
         if (str_cmp(command, "exit"))
             return 1;
         else if (0);
@@ -166,12 +168,11 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             char **new_command = rework_move(command, &length);
             printf("%d\n", move_is_possible(game_board, new_command, length));
             
-            free(new_command);
+            free(new_command); new_command = NULL;
             length = 0;
         }
 
         /*
-         *  Tester la possibilité du mouvement.
          *  Effectuer les mouvements.
          *  Changer les états de certaines variables (notamment au niveau des
          *  jetons sortis).
@@ -182,7 +183,10 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 
         coup++;
     }
-    
+   
+    free(command); command = NULL;
+    free(game_board); game_board = NULL;
+
     return 0;
 }
 
