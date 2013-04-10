@@ -21,7 +21,7 @@ int command_validation(const char *command)
 
 char **split_command(char *command, int *command_length)
 {
-    char *tmp_command = strdup(command);
+    char *tmp_command = strcpy(malloc((strlen(command) + 1) * sizeof(char)), command);
     int i = 0;
     int count_character = 0;
 
@@ -37,12 +37,12 @@ char **split_command(char *command, int *command_length)
     char *token = strtok(tmp_command, "-");
     if (token)
     {
-        *(splitted_command + i) = strdup(token);
+        *(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token);
         i++;
     }
     while ((token = strtok(NULL, "-")) != NULL)
     {
-        *(splitted_command + i) = strdup(token);
+        *(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token);
         i++;
     }
 
@@ -69,8 +69,8 @@ char **rework_move(char *command, int *length)
                 abs(splitted_command[0][0] - splitted_command[1][0]) + 1 : abs(splitted_command[0][1] - splitted_command[1][1]) + 1);
         char **reworked_command = malloc((2 * max_length) * sizeof(char *));
         
-        *reworked_command = strdup(*(splitted_command));
-        char *last = strdup(*(splitted_command+1));
+        *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
+        char *last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1));
 
         int i = 1;
         for (; i < max_length - 1; i++)
