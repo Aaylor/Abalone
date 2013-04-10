@@ -65,8 +65,8 @@ char **rework_move(char *command, int *length)
     }
     else
     {
-        int max_length = (abs(splitted_command[0][0] - splitted_command[1][0]) > abs(splitted_command[0][1] - splitted_command[1][1]) ?
-                abs(splitted_command[0][0] - splitted_command[1][0]) + 1 : abs(splitted_command[0][1] - splitted_command[1][1]) + 1);
+        int max_length = (abs(**splitted_command - *(*(splitted_command + 1))) > abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) ?
+                abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1) + 1));
         char **reworked_command = malloc((2 * max_length) * sizeof(char *));
         
         *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
@@ -76,35 +76,35 @@ char **rework_move(char *command, int *length)
         for (; i < max_length - 1; i++)
         {
             char *tmp = malloc(2 * sizeof(char));
-            if (reworked_command[i-1][0] > last[0])
-                *tmp = reworked_command[i-1][0] - 1;
-            else if (reworked_command[i-1][0] < last[0])
-                *tmp = reworked_command[i-1][0] + 1;
+            if (*(*(reworked_command + i - 1)) > *last)
+                *tmp = *(*(reworked_command + i - 1)) - 1;
+            else if (*(*(reworked_command + i - 1)) < *last)
+                *tmp = *(*(reworked_command + i - 1)) + 1;
             else
-                *tmp = reworked_command[i-1][0];
+                *tmp = *(*(reworked_command + i - 1));
 
-            if (reworked_command[i-1][1] > last[1])
-                *(tmp + 1) = reworked_command[i-1][1] - 1;
-            else if (reworked_command[i-1][1] < last[1])
-                *(tmp + 1) = reworked_command[i-1][1] + 1;
+            if (*(*(reworked_command + i - 1) + 1) > *(last + 1))
+                *(tmp + 1) = *(*(reworked_command + i - 1) + 1) - 1;
+            else if (*(*(reworked_command + i - 1) + 1) < *(last + 1))
+                *(tmp + 1) = *(*(reworked_command + i - 1) + 1 ) + 1;
             else
-                *(tmp + 1) = reworked_command[i-1][1];
+                *(tmp + 1) = *(*(reworked_command + i - 1) + 1);
             
-            reworked_command[i] = tmp;
+            *(reworked_command + i) = tmp;
         }
         *(reworked_command + i) = last;
 
         int j = 0;
-        int x = splitted_command[2][0] - reworked_command[0][0];
-        int y = splitted_command[2][1] - reworked_command[0][1];
+        int x = *(*(splitted_command + 2)) - **reworked_command;
+        int y = *(*(splitted_command + 2) + 1) - *((*reworked_command) + 1);
         i++;
         for (; i < 2 * max_length; i++)
         {
             char *tmp = malloc(2 * sizeof(char));
-            *tmp = reworked_command[j][0] + x;
-            *(tmp + 1) = reworked_command[j][1] + y;
+            *tmp = *(*(reworked_command + j)) + x;
+            *(tmp + 1) = *(*(reworked_command + j) + 1) + y;
 
-            reworked_command[i] = tmp;
+            *(reworked_command + i) = tmp;
             j++;
         }
 
@@ -118,7 +118,7 @@ char **rework_move(char *command, int *length)
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
 {
     /*  Test mode will be included after... */
-    board   *game_board = (board *)malloc(sizeof(board));
+    board   *game_board = malloc(sizeof(board));
     char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
     int     coup = 1;
 
