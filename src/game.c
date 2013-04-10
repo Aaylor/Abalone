@@ -11,6 +11,7 @@ int command_validation(const char *command)
     if (err_num == 0)
     {
         int match = regexec(&preg, command, 0, NULL, 0);
+        regfree(&preg);
 
         return (match == 0 ? MATCH : DONT_MATCH);
     }
@@ -45,6 +46,9 @@ char **split_command(char *command, int *command_length)
         i++;
     }
 
+    free(token);
+    free(tmp_command);
+
     *command_length = i;
     return splitted_command;
 }
@@ -67,18 +71,48 @@ char **rework_move(char *command, int *length)
         
         *reworked_command = strdup(*(splitted_command));
         char *last = strdup(*(splitted_command+1));
-        
+
         int i = 1;
-        for (; i < max_length; i++)
+        for (; i < max_length - 1; i++)
         {
-            char tmp[2];
-            if (*(reworked_command-1)[0] > last[0])
-            {
-                tmp[0] = *(reworked_command)[0] - 1;
-            }
+            char *tmp = malloc(2 * sizeof(char));
+            if (reworked_command[i-1][0] > last[0])
+                *tmp = reworked_command[i-1][0] - 1;
+            else if (reworked_command[i-1][0] < last[0])
+                *tmp = reworked_command[i-1][0] + 1;
+            else
+                *tmp = reworked_command[i-1][0];
+
+            if (reworked_command[i-1][1] > last[1])
+                *(tmp + 1) = reworked_command[i-1][1] - 1;
+            else if (reworked_command[i-1][1] < last[1])
+                *(tmp + 1) = reworked_command[i-1][1] + 1;
+            else
+                *(tmp + 1) = reworked_command[i-1][1];
+            
+            reworked_command[i] = tmp;
         }
+        *(reworked_command + i) = last;
+
+        int j = 0;
+        int x = splitted_command[2][0] - reworked_command[0][0];
+        int y = splitted_command[2][1] - reworked_command[0][1];
+        i++;
+        for (; i < 2 * max_length; i++)
+        {
+            char *tmp = malloc(2 * sizeof(char));
+            *tmp = reworked_command[j][0] + x;
+            *(tmp + 1) = reworked_command[j][1] + y;
+
+            reworked_command[i] = tmp;
+            j++;
+        }
+
+        free(splitted_command);
+
+        *length = 2 * max_length;
+        return reworked_command;
     }
-    return NULL;
 }
 
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
@@ -129,15 +163,9 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
-            /*char **splitted_command = split_command(command, &length);
-            printf("%d\n", move_is_possible(game_board, splitted_command, length));*/
             char **new_command = rework_move(command, &length);
-            int i = 0;
-            for( ; i < length; i++)
-            {
-                fprintf(stdout, "CMD : %s\n", *(new_command+i));
-            }
             printf("%d\n", move_is_possible(game_board, new_command, length));
+            
             free(new_command);
             length = 0;
         }
