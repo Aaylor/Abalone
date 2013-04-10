@@ -53,15 +53,17 @@ char **split_command(char *command, int *command_length)
     return splitted_command;
 }
 
-char **rework_move(char *command, int *length)
+s_command *rework_move(char *command)
 {
     int command_length = 0;
+    s_command *n_command = malloc(sizeof(s_command));
     char **splitted_command = split_command(command, &command_length);
 
     if (command_length == 2)
     {
-        *length = command_length;
-        return splitted_command;
+        n_command->squares = splitted_command;
+        n_command->length = command_length;
+        return n_command;
     }
     else
     {
@@ -69,10 +71,14 @@ char **rework_move(char *command, int *length)
                 abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1) + 1));
         char **reworked_command = malloc((2 * max_length) * sizeof(char *));
         
-        *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
         char *last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1));
 
+        /*
+         *  Fill a new char ** with every case between splitted_command[0] and
+         *  splitted_command[1].
+         */
         int i = 1;
+        *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
         for (; i < max_length - 1; i++)
         {
             char *tmp = malloc(2 * sizeof(char));
@@ -94,6 +100,9 @@ char **rework_move(char *command, int *length)
         }
         *(reworked_command + i) = last;
 
+        /*
+         *  Fill the end of the new char ** with every destination of every case
+         */
         int j = 0;
         int x = *(*(splitted_command + 2)) - **reworked_command;
         int y = *(*(splitted_command + 2) + 1) - *((*reworked_command) + 1);
@@ -110,8 +119,9 @@ char **rework_move(char *command, int *length)
 
         free(splitted_command); splitted_command = NULL;
 
-        *length = 2 * max_length;
-        return reworked_command;
+        n_command->squares = reworked_command;
+        n_command->length = 2*max_length;
+        return n_command;
     }
 }
 
@@ -134,8 +144,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     display_board(game_board);
     while( 1 )
     {
-        int length = 0;
-        char current_player = (coup & 1 ? 'B' : 'N');
+        player current_player = (coup & 1 ? 'B' : 'N');
 
         if ( (current_player == 'B' && b_player_statut) ||
              (current_player == 'N' && n_player_statut))
@@ -165,11 +174,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
+            s_command *new_command = rework_move(command);
+            new_command->color = current_player;
+            /*
             char **new_command = rework_move(command, &length);
             printf("%d\n", move_is_possible(game_board, new_command, length));
-            
+            */
+            fprintf(stdout, "%p ; %d ; %c\n", new_command->squares, new_command->length, new_command->color);
             free(new_command); new_command = NULL;
-            length = 0;
         }
 
         /*

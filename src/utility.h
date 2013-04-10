@@ -7,6 +7,7 @@
 
 #define BOARD_LENGTH 9
 
+#define player char
 
 /*
  *  Give the int value associated to the character to match to keys of the
@@ -35,5 +36,11 @@
  */
 #define str_cmp(s1,s2) (strcmp(s1,s2) == 0)
 
-#endif
+typedef struct
+{
+    char **squares;
+    int length;
+    player color;
+} s_command;
 
+#endif

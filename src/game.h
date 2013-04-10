@@ -29,7 +29,7 @@ char **split_command(char *, int *);
 /*
  *  Give the explicit command
  */
-char **rework_move(char *, int *);
+s_command *rework_move(char *);
 
 /*
  *  Main function where users can play
