@@ -163,7 +163,7 @@ int marbles_alignement(char **tab, int tabLen){
 /*Je met cette fonction ici pour l'instant pour eviter d'eventuels conflit avec git */
 /*move_is_possible renvoie :
   _1 : Coups Lateral POSSIBLE, 2 : Coups en ligne POSSIBLE
-  _-1 : La case de depart est vide, -2 : Il y a des case identiques dans les case de depart ou d'arrivee
+  _-1 : Une case de depart ne contient pas une bille du joueur, -2 : Il y a des case identiques dans les case de depart ou d'arrivee
   _-3 : Case de depart ou d'arrivee non adjacentes, -4 : Case de depart ou d'arrivee non alignee
   _-5 : Coups Lateral IMPOSSIBLE : car case d'arrivee non vide
   _-7 : Coups Lateral IMPOSSIBLE : trop de billes adverses sur l'alignement
@@ -175,13 +175,14 @@ int marbles_alignement(char **tab, int tabLen){
 int move_is_possible(board *b, s_command *commande){
   int tabLen = commande->length;
   char **tabMove = commande->squares;
-  /*POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');*/
+  char joueur = commande->color;
+  char adversaire = (commande->color == 'B')? 'N' : 'B';
   int i, j;
 
   /*LA COMMANDE A-T-ELLE UN SENS ?*/
-  /*Les cases de départ ne doivent pas etre vide*/
+  /*Les cases de départ doivent contenir les billes du joueur*/
   for(i = 0; i < tabLen/2; i++){
-    if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] == '.')
+    if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != joueur)
       return -1;
   }
   /*Les cases de depart ne doivent pas comporter des cases identiques, idem pour les cases d'arrivee*/
@@ -209,7 +210,7 @@ int move_is_possible(board *b, s_command *commande){
   /*Les cases de depart doivent etre dans le même alignement, idem pour les cases d'arrivee*/
   if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_alignement(&tabMove[tabLen/2], tabLen/2) ==0)
     return -4;
-  
+
   /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
   /*DEPLACEMENT LATERAL*/
   /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/  
@@ -234,8 +235,6 @@ int move_is_possible(board *b, s_command *commande){
   if(tabLen==2){
     /*On va considerer que la case de depart est la case du joueur*/
     if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.')){
-      char joueur = b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'];
-      char adversaire = (joueur = 'B') ? 'N' : 'B';
       /*On va compter les case dans la direction des pieces du joueur puis de l'adversaire dans le sens donné par le coup, jusqu'à rencontrer une case vide*/
       /*On definit la variation de position de la case de depart et d'arrivee pour definir la direction*/
       int variationX = tabMove[1][1] - tabMove[0][1], variationY = tabMove[1][0] - tabMove[0][0];
