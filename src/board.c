@@ -284,7 +284,7 @@ void do_move(board *b, char** tabMove, int tabLen){
   }
 }
 
-/*
+
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -322,4 +322,3 @@ int main(){
   
   return 0;
 }
-*/
