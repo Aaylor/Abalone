@@ -164,7 +164,7 @@ int marbles_alignement(char **tab, int tabLen){
 /*move_is_possible renvoie :
   _1 : Coups Lateral POSSIBLE, 2 : Coups en ligne POSSIBLE
   _-1 : La case de depart est vide, -2 : Il y a des case identiques dans les case de depart ou d'arrivee
-  _-3 : Case de depart ou d'arrivee non adjacentes, -4 : Je crois que j'ai fais un test redondant
+  _-3 : Case de depart ou d'arrivee non adjacentes, -4 : Case de depart ou d'arrivee non alignee
   _-5 : Coups Lateral IMPOSSIBLE : car case d'arrivee non vide
   _-7 : Coups Lateral IMPOSSIBLE : trop de billes adverses sur l'alignement
   _-8 : Coups Lateral IMPOSSIBLE : trop de billes du joueurs sur l'alignement
@@ -200,8 +200,8 @@ int move_is_possible(board *b, s_command *commande){
   /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
   if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
     return -3;
-  /*Les cases de depart ne doivent pas comporter des cases identiques, idme pour les cases d'arrivee*/
-  if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2) ==0)
+  /*Les cases de depart doivent etre dans le même alignement, idem pour les cases d'arrivee*/
+  if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_alignement(&tabMove[tabLen/2], tabLen/2) ==0)
     return -4;
   
   /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
@@ -317,7 +317,7 @@ int main(){
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
   
-  char *coups2[6] = {"I1","I2","I3","D3","D4","D5"};
+  char *coups2[6] = {"C3","C4","C5","D4","D5","D6"};
   s_command commande2 = {coups2, 6, 'B'};
   move_possible = move_is_possible(&b, &commande2);
   printf("Le coup est est il faisable ? %d\n", move_possible);
