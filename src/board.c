@@ -231,25 +231,23 @@ int move_is_possible(board *b, s_command *commande){
     if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
       break ;
   }
-  /*Il ne manque plus qu'à verifier que le nombre de cases de depart est suffisant pour pousser la bille contenue dans la case d'arrivée (si c'est vide derriere elle ou non*/
+  /*Verifions que le nombre de cases de depart est suffisant pour pousser la bille contenue dans la case d'arrivée (si c'est vide derriere elle ou non*/
   if(tabLen==2){
-    /*On va considerer que la case de depart est la case du joueur*/
+    /*La case de depart est la case du joueur*/
     if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.')){
-      /*On va compter les case dans la direction des pieces du joueur puis de l'adversaire dans le sens donné par le coup, jusqu'à rencontrer une case vide*/
+      /*Comptions les case dans la direction des pieces du joueur puis de l'adversaire dans le sens donné par le coup, jusqu'à rencontrer une case vide*/
       /*On definit la variation de position de la case de depart et d'arrivee pour definir la direction*/
       int variationX = tabMove[1][1] - tabMove[0][1], variationY = tabMove[1][0] - tabMove[0][0];
       int originY = c_to_key(tabMove[0][0]), originX =  tabMove[0][1] - '1';
       i = 0; int compteurJ = 0; int compteurA = 0;
 
       while((b->tab[originY + i*variationY][originX + i*variationX] == 'B' || b->tab[originY + i*variationY][originX + i*variationX] == 'N') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
-	/*printf("%c%c -> %c\n", tabMove[0][0] + i*variationY, tabMove[0][1] + i*variationX, b->tab[originY + i*variationY][originX + i*variationX]);*/
 	if (b->tab[originY + i*variationY][originX + i*variationX] == joueur)
 	  compteurJ++;
 	else if (b->tab[originY + i*variationY][originX + i*variationX] == adversaire)
 	  compteurA++;
 	i++;
       }
-      /*printf("Joueur : %d Adversaire : %d", compteurJ, compteurA);*/
       if(compteurA > 2) return -7;/*Trop de bille adverses*/
       if(compteurJ > 3) return -8;/*Trop de bille du joueur*/
       if(compteurJ == compteurA) return -9;/*Egalite des bille*/
@@ -294,6 +292,7 @@ void do_move(board *b, s_command* commande){
 }
 
 
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -333,3 +332,4 @@ int main(){
   
   return 0;
 }
+*/
