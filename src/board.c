@@ -200,6 +200,12 @@ int move_is_possible(board *b, s_command *commande){
   /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
   if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
     return -3;
+  /*Les cases de depart doivent etre adjacente aux cases d'arrivee*/
+  for(i = 0; i < tabLen/2; i++){
+    char* tabDepartArrivee[2] = {tabMove[i], tabMove[i+tabLen/2]};
+    if(marbles_are_adjacent(tabDepartArrivee, 2) == 0) 
+      return -3;
+  }
   /*Les cases de depart doivent etre dans le même alignement, idem pour les cases d'arrivee*/
   if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_alignement(&tabMove[tabLen/2], tabLen/2) ==0)
     return -4;
@@ -301,7 +307,7 @@ int main(){
   b.tab[c_to_key('G')][i_to_key(3)] = 'B';
   display_board(&b);
   
-  char *coups1[6] = {"E3","F3"};
+  char *coups1[6] = {"E3","E5"};
   s_command commande1 = {coups1, 2, 'B'};
   int move_possible = move_is_possible(&b, &commande1);
   printf("Le coup est est il faisable ? %d\n", move_possible);
