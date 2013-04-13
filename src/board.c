@@ -172,7 +172,9 @@ int marbles_alignement(char **tab, int tabLen){
   _-10 : Coups Lateral IMPOSSIBLE : + de billes adverses que de bille du joueur dans l'alignement
   _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
 */
-int move_is_possible(board *b, char **tabMove, int tabLen){
+int move_is_possible(board *b, s_command *commande){
+  int tabLen = commande->length;
+  char **tabMove = commande->squares;
   /*POUR LE TEST : printf("%s donne %c %c -> %d %d\n", tabMove[i], tabMove[i][0], tabMove[i][1], c_to_key(tabMove[i][0]), tabMove[i][1] - '1');*/
   int i, j;
 
@@ -259,7 +261,9 @@ int move_is_possible(board *b, char **tabMove, int tabLen){
 }
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
-void do_move(board *b, char** tabMove, int tabLen){
+void do_move(board *b, s_command* commande){
+  int tabLen = commande->length;
+  char **tabMove = commande->squares;
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
   int j;
   /*Calcul de la direction du mouvement*/
@@ -298,10 +302,11 @@ int main(){
   display_board(&b);
   
   char *coups1[6] = {"E3","F3"};
-  int move_possible = move_is_possible(&b, coups1, 2);
+  s_command commande1 = {coups1, 2, 'B'};
+  int move_possible = move_is_possible(&b, &commande1);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
-    do_move(&b, coups1, 2);
+    do_move(&b, &commande1);
     display_board(&b);
   }
   
@@ -313,10 +318,11 @@ int main(){
   display_board(&b);
   
   char *coups2[6] = {"I1","I2","I3","D3","D4","D5"};
-  move_possible = move_is_possible(&b, coups2, 6);
+  s_command commande2 = {coups2, 6, 'B'};
+  move_possible = move_is_possible(&b, &commande2);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
-    do_move(&b, coups2, 6);
+    do_move(&b, &commande2);
     display_board(&b);
   }
   

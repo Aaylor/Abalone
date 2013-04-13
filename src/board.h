@@ -15,7 +15,7 @@ int min_col(char l);
 int max_col(char l);
 int marbles_alignement(char **tab, int tabLen);
 int marbles_are_adjacent(char **tab, int tabLen);
-void do_move(board *b, char** tabMove, int tabLen);
-int move_is_possible(board *b, char **tabMove, int tabLen);
+void do_move(board *b, s_command *commande);
+int move_is_possible(board *b, s_command *commande);
 
 #endif
