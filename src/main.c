@@ -49,7 +49,7 @@ int parse_arguments(int argc, char **argv)
                 return 0;
             }
             LOAD_GAME = 1;
-            FILENAME = strdup(*(argv + position));
+            FILENAME = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position));
         }
         else
             fprintf(stderr, "Unknown argument : %s\n", *(argv + position));
