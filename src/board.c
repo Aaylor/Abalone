@@ -170,6 +170,7 @@ int marbles_alignement(char **tab, int tabLen){
   _-8 : Coups Lateral IMPOSSIBLE : trop de billes du joueurs sur l'alignement
   _-9 : Coups Lateral IMPOSSIBLE : egalite de billes joueur et adverses dans l'alignement
   _-10 : Coups Lateral IMPOSSIBLE : + de billes adverses que de bille du joueur dans l'alignement
+  _-11 Une case n'a aucun sens
   _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
 */
 int move_is_possible(board *b, s_command *commande){
@@ -180,6 +181,11 @@ int move_is_possible(board *b, s_command *commande){
   int i, j;
 
   /*LA COMMANDE A-T-ELLE UN SENS ?*/
+  /*Les cases doivent avoir un sens*/
+  for(i =0; i < tabLen; i++){
+    if(tabMove[i][0] < 'A' || tabMove[i][0] > 'I' || tabMove[i][1] < '1' ||tabMove[i][1] > '9')
+      return -11;
+  }
   /*Les cases de départ doivent contenir les billes du joueur*/
   for(i = 0; i < tabLen/2; i++){
     if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != joueur)
@@ -291,8 +297,52 @@ void do_move(board *b, s_command* commande){
   }
 }
 
+/*Fonction qui renvoit un tableau contenant toutes les commandes possibles*/
+s_command* possible_movements(board *b, player couleur){
+  int i, j,k;
+  int coupsPossibles[6][2] = {{0,1},{1,1},{1,0},{0,-1},{-1,-1},{-1,0}};
+  
+  int tabLen = 0;
+  s_command *tab = malloc(sizeof(s_command) * tabLen);/*Contiendra les mouvement possibles*/
+  
 
-/*
+  for(i='A'; i <= 'I'; i++){
+    for(j=1; j <= 9; j++){
+      if(b->tab[c_to_key(i)][i_to_key(j)] == couleur){
+		for(k=0; k<6; k++){
+			char *tabMouvement[2];
+			char caseDepart[3];
+			char caseArrivee[3];
+			/*Construction de la case de depart*/
+			caseDepart[0] = i; caseDepart[1] = j + '0'; caseDepart[2] =  '\0';
+			tabMouvement[0] = caseDepart;
+
+			/*Construction du coup a tester*/ 
+			caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
+			
+			printf("%p\n", &tabMouvement);
+			tabMouvement[1] = caseArrivee;
+			
+			s_command commande = {tabMouvement, 2, couleur};
+			/*On ajoute le coup au tableau si il est possible*/
+			if(move_is_possible(b, &commande) >0){
+				tabLen++;
+				tab = realloc(tab, sizeof(s_command) * tabLen);
+				tab[tabLen-1] = commande;
+				//printf("%s %s\n", (tab[0]).squares[0], (tab[0]).squares[0]);
+			  }
+			}	
+      }
+    }
+  }
+  
+  for(i = 0; i < tabLen; i++){
+    printf("%p : %s %s\n", (tab[i].squares), (tab[i]).squares[0], (tab[i]).squares[0]);
+  }
+  
+  return tab;
+}
+
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -330,6 +380,7 @@ int main(){
     display_board(&b);
   }
   
+  //Test
+  possible_movements(&b, 'B');
   return 0;
 }
-*/
