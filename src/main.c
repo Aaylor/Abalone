@@ -1,9 +1,6 @@
 #include "main.h"
 
-int PLAYER_B = 1, PLAYER_N = 1, TEST_MODE = 0, LOAD_GAME = 0;
-char *FILENAME;
-
-int parse_arguments(int argc, char **argv)
+int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *test_mode, int *load_game, char **filename)
 {
     int position = 0;
     for (position = 1; position < argc; position++)
@@ -21,16 +18,16 @@ int parse_arguments(int argc, char **argv)
             else if (str_cmp(*(argv + position), "robot"))
             {
                 if (c == 'B')
-                    PLAYER_B = 0;
+                    *player_b = 0;
                 else
-                    PLAYER_N = 0;
+                    *player_n = 0;
             }
             else if (str_cmp(*(argv + position), "humain"))
             {
                 if (c == 'B')
-                    PLAYER_B = 1;
+                    *player_b = H_PLAYER;
                 else
-                    PLAYER_N = 1;
+                    *player_n = H_PLAYER;
             }
             else
             {
@@ -39,7 +36,7 @@ int parse_arguments(int argc, char **argv)
             }
         }
         else if (str_cmp(*(argv + position), "-t"))
-            TEST_MODE = 1; 
+            *test_mode = 1;
         else if (str_cmp(*(argv + position), "-c"))
         {
             position++;
@@ -48,8 +45,8 @@ int parse_arguments(int argc, char **argv)
                 fprintf(stderr, "Bad argument after -c...\n");
                 return 0;
             }
-            LOAD_GAME = 1;
-            FILENAME = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position));
+            *load_game = 1;
+            *filename = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position));
         }
         else
             fprintf(stderr, "Unknown argument : %s\n", *(argv + position));
@@ -59,15 +56,15 @@ int parse_arguments(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-    parse_arguments(argc, argv);
-
-    fprintf(stdout, "\033cBienvenue dans le jeu Abalone.\n`TODO : AFFICHER LES INFORMATIONS SUR LA PARTIE... (Players, Test_mode...)\n\n");
+    int player_b = H_PLAYER, player_n = H_PLAYER, test_mode = 0, load_game = 0;
+    char *filename;
+    parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
 
     /*
      * Modify the way to initiate those variables ?
      * (maybe use local variable instead of global ?)
      */
-    play_game(PLAYER_B, PLAYER_N, TEST_MODE, LOAD_GAME);
+    play_game(player_b, player_n, test_mode, load_game);
     return EXIT_SUCCESS;
 }
 
