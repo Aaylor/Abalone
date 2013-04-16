@@ -139,6 +139,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     /*  Test mode will be included after... */
     board   *game_board = malloc(sizeof(board));
     char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
+    char    flush;
     int     coup = 1;
 
     if (load_game)
@@ -165,10 +166,13 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             }
             if (fscanf(stdin, "%s", command) == EOF)
                 return 1;
+            if (!test_mode)
+                while ((flush = getchar()) != '\n' && flush != EOF);
         }
         else
         {
             fprintf(stdout, "faire jouer l'ia ici... *visible par la variable current_player*\n");
+            coup++;
             continue;
         }
 

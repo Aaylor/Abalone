@@ -45,7 +45,7 @@ int parse_arguments(int argc, char **argv)
             position++;
             if (position >= argc)
             {
-                fprintf(stderr, "Bad arguement after -c...\n");
+                fprintf(stderr, "Bad argument after -c...\n");
                 return 0;
             }
             LOAD_GAME = 1;
