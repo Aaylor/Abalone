@@ -173,7 +173,7 @@ int marbles_alignement(char **tab, int tabLen){
   _-11 Une case n'a aucun sens
   _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
 */
-int move_is_possible(board *b, s_command *commande){
+int move_is_possible(board *b, p_move *commande){
   int tabLen = commande->length;
   char **tabMove = commande->squares;
   char joueur = commande->color;
@@ -270,7 +270,7 @@ int move_is_possible(board *b, s_command *commande){
 }
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
-void do_move(board *b, s_command* commande){
+void do_move(board *b, p_move* commande){
   int tabLen = commande->length;
   char **tabMove = commande->squares;
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
@@ -298,12 +298,12 @@ void do_move(board *b, s_command* commande){
 }
 
 /*Fonction qui renvoit un tableau contenant toutes les commandes possibles*/
-s_command* possible_movements(board *b, player couleur){
+p_move* possible_movements(board *b, player couleur){
   int i, j,k;
   int coupsPossibles[6][2] = {{0,1},{1,1},{1,0},{0,-1},{-1,-1},{-1,0}};
   
   int tabLen = 0;
-  s_command *tab = malloc(sizeof(s_command) * tabLen);/*Contiendra les mouvement possibles*/
+  p_move *tab = malloc(sizeof(p_move) * tabLen);/*Contiendra les mouvement possibles*/
   
 
   for(i='A'; i <= 'I'; i++){
@@ -323,13 +323,14 @@ s_command* possible_movements(board *b, player couleur){
 			printf("%p\n", &tabMouvement);
 			tabMouvement[1] = caseArrivee;
 			
-			s_command commande = {tabMouvement, 2, couleur};
+			p_move commande = {tabMouvement, 2, couleur};
 			/*On ajoute le coup au tableau si il est possible*/
 			if(move_is_possible(b, &commande) >0){
 				tabLen++;
-				tab = realloc(tab, sizeof(s_command) * tabLen);
+				tab = realloc(tab, sizeof(p_move) * tabLen);
 				tab[tabLen-1] = commande;
-				//printf("%s %s\n", (tab[0]).squares[0], (tab[0]).squares[0]);
+				/*printf("%s %s\n", (tab[0]).squares[0],
+                 * (tab[0]).squares[0]);*/
 			  }
 			}	
       }
@@ -348,7 +349,7 @@ int main(){
   display_board(&b);
   
   
-  //Test coup 1
+  /*Test coup 1*/
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   b.tab[c_to_key('D')][i_to_key(3)] = 'B';
   b.tab[c_to_key('F')][i_to_key(3)] = 'B';
@@ -356,7 +357,7 @@ int main(){
   display_board(&b);
   
   char *coups1[6] = {"E3","E5"};
-  s_command commande1 = {coups1, 2, 'B'};
+  p_move commande1 = {coups1, 2, 'B'};
   int move_possible = move_is_possible(&b, &commande1);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
@@ -367,12 +368,12 @@ int main(){
 
   putchar('\n');
 
-  //Test coup 2
+  /*Test coup 2*/
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
   
   char *coups2[6] = {"C3","C4","C5","D4","D5","D6"};
-  s_command commande2 = {coups2, 6, 'B'};
+  p_move commande2 = {coups2, 6, 'B'};
   move_possible = move_is_possible(&b, &commande2);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
@@ -380,7 +381,7 @@ int main(){
     display_board(&b);
   }
   
-  //Test
+  /*Test*/
   possible_movements(&b, 'B');
   return 0;
 }
