@@ -29,12 +29,14 @@ char **split_command(char *, int *);
 /*
  *  Give the explicit command
  */
-s_command *rework_move(char *);
+p_move *rework_move(char *);
 
 /*
  *  Main function where users can play
  */
 int play_game(int, int, int, int);
+
+void free_p_move(p_move *);
 
 #endif
 

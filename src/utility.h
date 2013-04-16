@@ -41,6 +41,6 @@ typedef struct
     char **squares;
     int length;
     player color;
-} s_command;
+} p_move;
 
 #endif

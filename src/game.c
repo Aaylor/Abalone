@@ -53,10 +53,10 @@ char **split_command(char *command, int *command_length)
     return splitted_command;
 }
 
-s_command *rework_move(char *command)
+p_move *rework_move(char *command)
 {
     int command_length = 0;
-    s_command *n_command = malloc(sizeof(s_command));
+    p_move *n_command = malloc(sizeof(p_move));
     char **splitted_command = split_command(command, &command_length);
 
     if (command_length == 2)
@@ -125,6 +125,15 @@ s_command *rework_move(char *command)
     }
 }
 
+void free_p_move(p_move *move)
+{
+   int i = 0;
+   for (; i < move->length; i++)
+       free( *(move->squares + i) );
+   free(move->squares);
+   free(move);
+}
+
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
 {
     /*  Test mode will be included after... */
@@ -174,14 +183,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
-            s_command *new_command = rework_move(command);
+            p_move *new_command = rework_move(command);
             new_command->color = current_player;
             /*
             char **new_command = rework_move(command, &length);
             printf("%d\n", move_is_possible(game_board, new_command, length));
             */
             fprintf(stdout, "%p ; %d ; %c\n", new_command->squares, new_command->length, new_command->color);
-            free(new_command); new_command = NULL;
+            free_p_move(new_command); new_command = NULL;
         }
 
         /*
