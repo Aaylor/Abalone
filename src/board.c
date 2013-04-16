@@ -310,17 +310,16 @@ p_move* possible_movements(board *b, player couleur){
     for(j=1; j <= 9; j++){
       if(b->tab[c_to_key(i)][i_to_key(j)] == couleur){
 		for(k=0; k<6; k++){
-			char *tabMouvement[2];
-			char caseDepart[3];
-			char caseArrivee[3];
+			char **tabMouvement = malloc(2 * sizeof(char*));
+			char *caseDepart = malloc(3*sizeof(char));
+			char * caseArrivee = malloc(3*sizeof(char));
 			/*Construction de la case de depart*/
 			caseDepart[0] = i; caseDepart[1] = j + '0'; caseDepart[2] =  '\0';
 			tabMouvement[0] = caseDepart;
 
 			/*Construction du coup a tester*/ 
 			caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
-			
-			printf("%p\n", &tabMouvement);
+
 			tabMouvement[1] = caseArrivee;
 			
 			p_move commande = {tabMouvement, 2, couleur};
@@ -337,19 +336,16 @@ p_move* possible_movements(board *b, player couleur){
     }
   }
   
-  for(i = 0; i < tabLen; i++){
-    printf("%p : %s %s\n", (tab[i].squares), (tab[i]).squares[0], (tab[i]).squares[0]);
-  }
-  
   return tab;
 }
 
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
   
   
-  /*Test coup 1*/
+  //Test coup
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   b.tab[c_to_key('D')][i_to_key(3)] = 'B';
   b.tab[c_to_key('F')][i_to_key(3)] = 'B';
@@ -368,7 +364,7 @@ int main(){
 
   putchar('\n');
 
-  /*Test coup 2*/
+  //Test coup 2
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
   
@@ -381,7 +377,8 @@ int main(){
     display_board(&b);
   }
   
-  /*Test*/
+  //Test
   possible_movements(&b, 'B');
   return 0;
 }
+*/
