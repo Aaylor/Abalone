@@ -68,8 +68,9 @@ p_move *rework_move(char *command)
     else
     {
         int max_length = (abs(**splitted_command - *(*(splitted_command + 1))) > abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) ?
-                abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1) + 1));
-        char **reworked_command = malloc((2 * max_length) * sizeof(char *));
+                abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) + 1);
+                
+        char **reworked_command = malloc(((2 * max_length) + 1) * sizeof(char *));
         
         char *last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1));
 
@@ -156,8 +157,8 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     {
         player current_player = (coup & 1 ? 'B' : 'N');
 
-        if ( (current_player == 'B' && b_player_statut) ||
-             (current_player == 'N' && n_player_statut))
+        if ( (current_player == 'B' && (b_player_statut & H_PLAYER)) ||
+             (current_player == 'N' && (n_player_statut & H_PLAYER)) )
         {
             if (!test_mode)
             {
@@ -171,7 +172,16 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
-            fprintf(stdout, "faire jouer l'ia ici... *visible par la variable current_player*\n");
+            if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
+                 (current_player == 'N' && (n_player_statut & EASY_AI)) )
+            {
+                fprintf(stdout, "faire jouer l'ia EASY ici... *visible par la variable current_player*\n");
+            }
+            if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
+                 (current_player == 'N' && (n_player_statut & MEDIUM_AI)) )
+            {
+                fprintf(stdout, "faire jouer l'ia MEDIUM ici... *visible par la variable current_player*\n");
+            }
             coup++;
             continue;
         }
@@ -189,7 +199,11 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         {
             p_move *new_command = rework_move(command);
             new_command->color = current_player;
-            
+           
+            int a = 0;
+            for(; a < new_command->length; a++)
+                fprintf(stdout, "\t%s\n", *(new_command->squares + a));
+
             int m_return = move_is_possible(game_board, new_command);
             if (m_return > 0)
             {

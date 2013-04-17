@@ -18,9 +18,9 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
             else if (str_cmp(*(argv + position), "robot"))
             {
                 if (c == 'B')
-                    *player_b = 0;
+                    *player_b = EASY_AI;
                 else
-                    *player_n = 0;
+                    *player_n = EASY_AI;
             }
             else if (str_cmp(*(argv + position), "humain"))
             {
