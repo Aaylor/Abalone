@@ -189,6 +189,17 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         {
             p_move *new_command = rework_move(command);
             new_command->color = current_player;
+            
+            int m_return = move_is_possible(game_board, new_command);
+            if (m_return > 0)
+            {
+                do_move(game_board, new_command);
+            }
+            else
+            {
+                fprintf(stderr, "ERR : %d, Coup impossible...\n", m_return);
+                continue;
+            }
             /*
             char **new_command = rework_move(command, &length);
             printf("%d\n", move_is_possible(game_board, new_command, length));
