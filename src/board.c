@@ -319,12 +319,13 @@ p_move* possible_movements(board *b, player couleur){
 
 			/*Construction du coup a tester*/ 
 			caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
-			
+
 			printf("%p\n", &tabMouvement);
 			tabMouvement[1] = caseArrivee;
-			
+
 			p_move commande = {tabMouvement, 2, couleur};
-			/*On ajoute le coup au tableau si il est possible*/
+			
+            /*On ajoute le coup au tableau si il est possible*/
 			if(move_is_possible(b, &commande) >0){
 				tabLen++;
 				tab = realloc(tab, sizeof(p_move) * tabLen);
@@ -343,13 +344,13 @@ p_move* possible_movements(board *b, player couleur){
   
   return tab;
 }
-
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
   
   
-  /*Test coup 1*/
+  *Test coup 1*
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   b.tab[c_to_key('D')][i_to_key(3)] = 'B';
   b.tab[c_to_key('F')][i_to_key(3)] = 'B';
@@ -368,7 +369,7 @@ int main(){
 
   putchar('\n');
 
-  /*Test coup 2*/
+  *Test coup 2*
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
   
@@ -381,7 +382,7 @@ int main(){
     display_board(&b);
   }
   
-  /*Test*/
+  *Test*
   possible_movements(&b, 'B');
   return 0;
-}
+} */
