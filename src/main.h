@@ -11,7 +11,7 @@
  *      -c <filename> load the game from the file given by the user
  *      -t use test mode
  */
-int parse_arguments(int, char **);
+int parse_arguments(int, char **, int *, int *, int *, int *, char **);
 
 #endif
 
