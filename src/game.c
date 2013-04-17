@@ -70,7 +70,7 @@ p_move *rework_move(char *command)
         int max_length = (abs(**splitted_command - *(*(splitted_command + 1))) > abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) ?
                 abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) + 1);
                 
-        char **reworked_command = malloc(((2 * max_length) + 1) * sizeof(char *));
+        char **reworked_command = malloc((2 * max_length) * sizeof(char *));
         
         char *last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1));
 
@@ -82,7 +82,7 @@ p_move *rework_move(char *command)
         *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
         for (; i < max_length - 1; i++)
         {
-            char *tmp = malloc(2 * sizeof(char));
+            char *tmp = malloc(3 * sizeof(char));
             if (*(*(reworked_command + i - 1)) > *last)
                 *tmp = *(*(reworked_command + i - 1)) - 1;
             else if (*(*(reworked_command + i - 1)) < *last)
@@ -97,6 +97,7 @@ p_move *rework_move(char *command)
             else
                 *(tmp + 1) = *(*(reworked_command + i - 1) + 1);
             
+            *(tmp + 2) = '\0';
             *(reworked_command + i) = tmp;
         }
         *(reworked_command + i) = last;
@@ -110,9 +111,10 @@ p_move *rework_move(char *command)
         i++;
         for (; i < 2 * max_length; i++)
         {
-            char *tmp = malloc(2 * sizeof(char));
+            char *tmp = malloc(3 * sizeof(char));
             *tmp = *(*(reworked_command + j)) + x;
             *(tmp + 1) = *(*(reworked_command + j) + 1) + y;
+            *(tmp + 2) = '\0';
 
             *(reworked_command + i) = tmp;
             j++;
@@ -200,10 +202,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             p_move *new_command = rework_move(command);
             new_command->color = current_player;
            
-            int a = 0;
-            for(; a < new_command->length; a++)
-                fprintf(stdout, "\t%s\n", *(new_command->squares + a));
-
             int m_return = move_is_possible(game_board, new_command);
             if (m_return > 0)
             {
