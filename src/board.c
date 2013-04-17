@@ -49,6 +49,7 @@ board *init_board(board*b){
 
 /* Affiche le plateau */
 void display_board(board *b){
+  char* color_text = 0;
   /*Partie haute*/
   printf("       ____________\n");
   char i;
@@ -66,9 +67,13 @@ void display_board(board *b){
     else if(i == 'A') printf("    A \\ ");
     /*Dessin du corps du plateau*/
     for(j=1; j <= 9; j++){
-      if(b->tab[c_to_key(i)][i_to_key(j)] != '0')
+      if(b->tab[c_to_key(i)][i_to_key(j)] != '0'){
+	color_text = (b->tab[c_to_key(i)][i_to_key(j)] == 'B') ? "34" : (b->tab[c_to_key(i)][i_to_key(j)] == 'N') ? "30" : "0";
+	set_colot_text(color_text);
 	printf("%c ", b->tab[c_to_key(i)][i_to_key(j)]);
+      }
     }
+    set_colot_text("0");
     /*Partie gauche du plateau*/
     if(i<= 'I' && i >= 'F') printf(" \\ \n");
     else if (i == 'E') printf(" | \n");
@@ -309,48 +314,43 @@ p_move* possible_movements(board *b, player couleur){
   for(i='A'; i <= 'I'; i++){
     for(j=1; j <= 9; j++){
       if(b->tab[c_to_key(i)][i_to_key(j)] == couleur){
-		for(k=0; k<6; k++){
-			char *tabMouvement[2];
-			char caseDepart[3];
-			char caseArrivee[3];
-			/*Construction de la case de depart*/
-			caseDepart[0] = i; caseDepart[1] = j + '0'; caseDepart[2] =  '\0';
-			tabMouvement[0] = caseDepart;
+	for(k=0; k<6; k++){
+	  char **tabMouvement = malloc(2 * sizeof(char*));
+	  char *caseDepart = malloc(3*sizeof(char));
+	  char * caseArrivee = malloc(3*sizeof(char));
+	  /*Construction de la case de depart*/
+	  caseDepart[0] = i; caseDepart[1] = j + '0'; caseDepart[2] =  '\0';
+	  tabMouvement[0] = caseDepart;
 
-			/*Construction du coup a tester*/ 
-			caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
+	  /*Construction du coup a tester*/ 
+	  caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
 
-			printf("%p\n", &tabMouvement);
-			tabMouvement[1] = caseArrivee;
-
-			p_move commande = {tabMouvement, 2, couleur};
+	  tabMouvement[1] = caseArrivee;
 			
-            /*On ajoute le coup au tableau si il est possible*/
-			if(move_is_possible(b, &commande) >0){
-				tabLen++;
-				tab = realloc(tab, sizeof(p_move) * tabLen);
-				tab[tabLen-1] = commande;
-				/*printf("%s %s\n", (tab[0]).squares[0],
-                 * (tab[0]).squares[0]);*/
-			  }
-			}	
+	  p_move commande = {tabMouvement, 2, couleur};
+	  /*On ajoute le coup au tableau si il est possible*/
+	  if(move_is_possible(b, &commande) >0){
+	    tabLen++;
+	    tab = realloc(tab, sizeof(p_move) * tabLen);
+	    tab[tabLen-1] = commande;
+	    /*printf("%s %s\n", (tab[0]).squares[0],
+	     * (tab[0]).squares[0]);*/
+	  }
+	}	
       }
     }
   }
   
-  for(i = 0; i < tabLen; i++){
-    printf("%p : %s %s\n", (tab[i].squares), (tab[i]).squares[0], (tab[i]).squares[0]);
-  }
-  
   return tab;
 }
+
 /*
 int main(){
   board b = create_new_board();
   display_board(&b);
   
   
-  *Test coup 1*
+  //Test coup
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   b.tab[c_to_key('D')][i_to_key(3)] = 'B';
   b.tab[c_to_key('F')][i_to_key(3)] = 'B';
@@ -369,7 +369,7 @@ int main(){
 
   putchar('\n');
 
-  *Test coup 2*
+  //Test coup 2
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
   
@@ -382,7 +382,8 @@ int main(){
     display_board(&b);
   }
   
-  *Test*
+  //Test
   possible_movements(&b, 'B');
   return 0;
-} */
+}
+*/

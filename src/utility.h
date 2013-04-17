@@ -39,6 +39,8 @@
  */
 #define str_cmp(s1,s2) (strcmp(s1,s2) == 0)
 
+#define set_colot_text(param) printf("\033[%sm",param)
+
 typedef struct
 {
     char **squares;
