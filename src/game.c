@@ -174,20 +174,27 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
+            p_move *ai_move;
             if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
                  (current_player == 'N' && (n_player_statut & EASY_AI)) )
             {
                 fprintf(stdout, "faire jouer l'ia EASY ici... *visible par la variable current_player*\n");
+                ai_move = random_move(game_board, current_player);
             }
             if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
                  (current_player == 'N' && (n_player_statut & MEDIUM_AI)) )
             {
                 fprintf(stdout, "faire jouer l'ia MEDIUM ici... *visible par la variable current_player*\n");
             }
+            
+            do_move(game_board, ai_move);
+            
             coup++;
+            display_board(game_board);
             continue;
         }
 
+        printf("commande : %s\n", command);
 
         if (str_cmp(command, "exit"))
             return 1;
@@ -226,7 +233,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
          *  jetons sortis).
          *  Vérifier si il y a un gagnant.
          */
-        printf("commande : %s\n", command);
         display_board(game_board);
 
         coup++;

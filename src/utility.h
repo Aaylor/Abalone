@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define BOARD_LENGTH 9
 
@@ -38,6 +39,8 @@
  *  Instead of returning 0 if the two strings are equals, it'll return 1.
  */
 #define str_cmp(s1,s2) (strcmp(s1,s2) == 0)
+
+#define get_random_num(max) (rand()%max)
 
 #define set_colot_text(param) printf("\033[%sm",param)
 

@@ -5,6 +5,7 @@
 
 #include "utility.h"
 #include "board.h"
+#include "ai.h"
 
 #define PROMPT_B "Joueur Blanc > "
 #define PROMPT_N "Joueur Noir  > "
