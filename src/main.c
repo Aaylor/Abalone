@@ -46,7 +46,8 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                 return 0;
             }
             *load_game = 1;
-            *filename = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position));
+            if ((*filename = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position))) == NULL)
+                fprintf(stderr, "Erreur dans la copie...\n");
         }
         else
             fprintf(stderr, "Unknown argument : %s\n", *(argv + position));
@@ -63,10 +64,6 @@ int main(int argc, char **argv)
     
     parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
 
-    /*
-     * Modify the way to initiate those variables ?
-     * (maybe use local variable instead of global ?)
-     */
     play_game(player_b, player_n, test_mode, load_game);
     return EXIT_SUCCESS;
 }

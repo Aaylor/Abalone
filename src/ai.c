@@ -11,7 +11,7 @@ p_move *random_move(board *b, player cur_player)
     easy_ai_move->squares   = (ai_possible_movement + random_move_num)->squares;
     easy_ai_move->length    = (ai_possible_movement + random_move_num)->length;
     easy_ai_move->color     = cur_player;
-    free(ai_possible_movement);
+    free(ai_possible_movement); ai_possible_movement = NULL;
 
     return easy_ai_move;
 }

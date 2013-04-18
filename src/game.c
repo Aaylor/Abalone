@@ -37,12 +37,14 @@ char **split_command(char *command, int *command_length)
     char *token = strtok(tmp_command, "-");
     if (token)
     {
-        *(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token);
+        if ((*(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token)) == NULL)
+            fprintf(stderr, "Erreur dans la copie du token...\n");
         i++;
     }
     while ((token = strtok(NULL, "-")) != NULL)
     {
-        *(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token);
+        if ((*(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token)) == NULL)
+            fprintf(stderr, "Erreur dans la copie du token...\n");
         i++;
     }
 
@@ -70,16 +72,20 @@ p_move *rework_move(char *command)
         int max_length = (abs(**splitted_command - *(*(splitted_command + 1))) > abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) ?
                 abs(**splitted_command - *(*(splitted_command + 1))) + 1 : abs(*(*splitted_command + 1) - *(*(splitted_command + 1) + 1)) + 1);
                 
+        char *last;
         char **reworked_command = malloc((2 * max_length) * sizeof(char *));
         
-        char *last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1));
+        if ((last = strcpy(malloc(((strlen(*(splitted_command + 1)) + 1) * sizeof(char))), *(splitted_command + 1))) == NULL)
+            fprintf(stderr, "Erreur dans la copie...\n");
 
         /*
          *  Fill a new char ** with every case between splitted_command[0] and
          *  splitted_command[1].
          */
         int i = 1;
-        *reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command));
+        if ((*reworked_command = strcpy(malloc(((strlen(*(splitted_command)) + 1) * sizeof(char))), *(splitted_command))) == NULL)
+            fprintf(stderr, "Erreur dans la copie...\n");
+
         for (; i < max_length - 1; i++)
         {
             char *tmp = malloc(3 * sizeof(char));
@@ -174,11 +180,10 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
-            p_move *ai_move;
+            p_move *ai_move = NULL;
             if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
                  (current_player == 'N' && (n_player_statut & EASY_AI)) )
             {
-                fprintf(stdout, "faire jouer l'ia EASY ici... *visible par la variable current_player*\n");
                 ai_move = random_move(game_board, current_player);
             }
             if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
@@ -188,7 +193,8 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             }
             
             do_move(game_board, ai_move);
-            
+            free(ai_move); ai_move = NULL;
+
             coup++;
             display_board(game_board);
             continue;
