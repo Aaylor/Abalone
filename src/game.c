@@ -191,10 +191,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 char *prompt = (current_player == 'B' ? PROMPT_B : PROMPT_N);
                 fprintf(stdout, "#%d %s", coup, prompt);
             }
-            if (fscanf(stdin, "%50s", command) == EOF)
+            
+            if (fscanf(stdin, "%50s", command) == EOF && test_mode)
                 return 1;
+            
             if (!test_mode)
                 while ((flush = getchar()) != '\n' && flush != EOF);
+            else
+                fprintf(stdout, "#%d %s\n", coup, command);
         }
         else
         {
@@ -217,8 +221,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             display_board(game_board);
             continue;
         }
-
-        printf("commande : %s\n", command);
 
         if (str_cmp(command, "exit"))
         {   
@@ -244,13 +246,18 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             }
             else
             {
-                fprintf(stderr, "ERR : %d, Coup impossible...\n", m_return);
-                continue;
+                if (!test_mode)
+                {
+                    fprintf(stderr, "ERR : %d, Coup impossible...\n", m_return);
+                    continue;
+                }
+                else
+                {
+                    fprintf(stderr, "COMMAND ERROR. TEST MODE WILL EXIT.\n");
+                    return 1;
+                }
             }
-            /*
-            char **new_command = rework_move(command, &length);
-            printf("%d\n", move_is_possible(game_board, new_command, length));
-            */
+            
             free_p_move(new_command); new_command = NULL;
         }
 
