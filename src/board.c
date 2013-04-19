@@ -344,12 +344,12 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-/*
+
 int main(){
   board b = create_new_board();
   display_board(&b);
   
-  
+  /*
   //Test coup
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   b.tab[c_to_key('D')][i_to_key(3)] = 'B';
@@ -365,17 +365,19 @@ int main(){
     do_move(&b, &commande1);
     display_board(&b);
   }
-  
+  */
 
   putchar('\n');
 
   //Test coup 2
+  /*
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
+  */
   
-  char *coups2[6] = {"C3","C4","C5","D4","D5","D6"};
+  char *coups2[6] = {"C3","C4","C5","D3","D4","D5"};
   p_move commande2 = {coups2, 6, 'B'};
-  move_possible = move_is_possible(&b, &commande2);
+  int move_possible = move_is_possible(&b, &commande2);
   printf("Le coup est est il faisable ? %d\n", move_possible);
   if(move_possible > 0){
     do_move(&b, &commande2);
@@ -386,4 +388,3 @@ int main(){
   possible_movements(&b, 'B');
   return 0;
 }
-*/

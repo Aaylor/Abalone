@@ -19,5 +19,4 @@ void do_move(board *b, p_move *commande);
 int move_is_possible(board *b, p_move *commande);
 p_move* possible_movements(board *b, player couleur, int *length);
 
-
 #endif
