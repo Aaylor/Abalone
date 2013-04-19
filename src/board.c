@@ -188,7 +188,7 @@ int move_is_possible(board *b, p_move *commande){
   /*LA COMMANDE A-T-ELLE UN SENS ?*/
   /*Les cases doivent avoir un sens*/
   for(i =0; i < tabLen; i++){
-    if(tabMove[i][0] < 'A' || tabMove[i][0] > 'I' || tabMove[i][1] < '1' ||tabMove[i][1] > '9')
+    if(tabMove[i][0] < 'A' || tabMove[i][0] > 'I' || tabMove[i][1] < '1' || tabMove[i][1] > '9')
       return -11;
   }
   /*Les cases de départ doivent contenir les billes du joueur*/
@@ -306,14 +306,16 @@ void do_move(board *b, p_move* commande){
 p_move* possible_movements(board *b, player couleur, int *length){
   int i, j,k;
   int coupsPossibles[6][2] = {{0,1},{1,1},{1,0},{0,-1},{-1,-1},{-1,0}};
+  int lignesPossible[3][2] = {{1,1},{0,1},{-1,1}}; /*Les variations de position que l'on va utiliser pour selectionner les billes adjacentes en ligne*/
+  int l;
   
   int tabLen = 0;
   p_move *tab = malloc(sizeof(p_move) * tabLen);/*Contiendra les mouvement possibles*/
   
-
+  /*DEPLACEMENT D'UNE CASE */
   for(i='A'; i <= 'I'; i++){
     for(j=1; j <= 9; j++){
-      if(b->tab[c_to_key(i)][i_to_key(j)] == couleur){
+      if(b->tab[c_to_key(i)][i_to_key(j)] == couleur){/*On selectionne les cases du joueur*/
 	for(k=0; k<6; k++){
 	  char **tabMouvement = malloc(2 * sizeof(char*));
 	  char *caseDepart = malloc(3*sizeof(char));
@@ -324,23 +326,110 @@ p_move* possible_movements(board *b, player couleur, int *length){
 
 	  /*Construction du coup a tester*/ 
 	  caseArrivee[0] = i + coupsPossibles[k][0]; caseArrivee[1] = j + '0' + coupsPossibles[k][1]; caseArrivee[2] = '\0';
-
 	  tabMouvement[1] = caseArrivee;
-			
+	  /*Construction du mouvement correspondant*/
 	  p_move commande = {tabMouvement, 2, couleur};
-	  /*On ajoute le coup au tableau si il est possible*/
+	  /*On ajoute le coup au tableau s'il est possible*/
 	  if(move_is_possible(b, &commande) >0){
 	    tabLen++;
 	    tab = realloc(tab, sizeof(p_move) * tabLen);
 	    tab[tabLen-1] = commande;
-	    /*printf("%s %s\n", (tab[0]).squares[0],
-	     * (tab[0]).squares[0]);*/
 	  }
 	}	
       }
     }
   }
-  *length = tabLen; 
+  /*DEPLACEMENT DE DEUX CASES */
+  for(i='A'; i <= 'I'; i++){
+    for(j=1; j <= 9; j++){
+      for(l = 0; l <= 2; l++){
+	int i2 = i+lignesPossible[l][0], j2 = j+lignesPossible[l][1];
+	int keyi2 = c_to_key(i)+lignesPossible[l][0], keyj2 = i_to_key(j)+lignesPossible[l][1];
+	if(keyi2 < 9 && keyj2 < 9 && b->tab[c_to_key(i)][i_to_key(j)] == couleur && b->tab[keyi2][keyj2] == couleur){/*On selectionne les cases du joueur*/
+	  for(k=0; k<6; k++){
+	    char **tabMouvement = malloc(4 * sizeof(char*));
+	    char *caseDepart1 = malloc(3*sizeof(char));
+	    char *caseDepart2 = malloc(3*sizeof(char));
+	    char * caseArrivee1 = malloc(3*sizeof(char));
+	    char * caseArrivee2 = malloc(3*sizeof(char));
+				  
+	    /*Construction des cases de depart*/
+	    caseDepart1[0] = i; caseDepart1[1] = j + '0'; caseDepart1[2] =  '\0';
+	    tabMouvement[0] = caseDepart1;
+	    caseDepart2[0] = i2; caseDepart2[1] = j2 + '0'; caseDepart2[2] =  '\0';
+	    tabMouvement[1] = caseDepart2;
+
+	    /*Construction du coup a tester*/ 
+	    caseArrivee1[0] = i + coupsPossibles[k][0]; caseArrivee1[1] = j + '0' + coupsPossibles[k][1]; caseArrivee1[2] = '\0';
+	    tabMouvement[2] = caseArrivee1;
+	    caseArrivee2[0] = i2 + coupsPossibles[k][0]; caseArrivee2[1] = j2 + '0' + coupsPossibles[k][1]; caseArrivee2[2] = '\0';
+	    tabMouvement[3] = caseArrivee2;
+	    /*Construction du mouvement correspondant*/
+	    p_move commande = {tabMouvement, 4, couleur};
+			
+			
+	    /*On ajoute le coup au tableau s'il est possible*/
+	    if(move_is_possible(b, &commande) >0){
+	      tabLen++;
+	      tab = realloc(tab, sizeof(p_move) * tabLen);
+	      tab[tabLen-1] = commande;
+	      /*printf("Depart : %s %s, Arrivee : %s %s\n", tabMouvement[0], tabMouvement[1], tabMouvement[2], tabMouvement[3]);*/
+	    }
+	  }	
+	}
+      }
+    }
+  }
+  /*DEPLACEMENT DE TROIS CASES */
+  for(i='A'; i <= 'I'; i++){
+    for(j=1; j <= 9; j++){
+      for(l = 0; l <= 2; l++){
+	int i2 = i+lignesPossible[l][0], j2 = j+lignesPossible[l][1];
+	int keyi2 = c_to_key(i)+lignesPossible[l][0], keyj2 = i_to_key(j)+lignesPossible[l][1];
+	int i3 = i2+lignesPossible[l][0], j3 = j2+lignesPossible[l][1];
+	int keyi3 = c_to_key(i2)+lignesPossible[l][0], keyj3 = i_to_key(j2)+lignesPossible[l][1];
+	if(keyi3 < 9 && keyj3 < 9 && b->tab[c_to_key(i)][i_to_key(j)] == couleur && b->tab[keyi2][keyj2] == couleur && b->tab[keyi3][keyj3] == couleur){/*On selectionne les cases du joueur*/
+	  for(k=0; k<6; k++){
+	    char **tabMouvement = malloc(4 * sizeof(char*));
+	    char *caseDepart1 = malloc(3*sizeof(char));
+	    char *caseDepart2 = malloc(3*sizeof(char));
+	    char *caseDepart3 = malloc(3*sizeof(char));
+	    char * caseArrivee1 = malloc(3*sizeof(char));
+	    char * caseArrivee2 = malloc(3*sizeof(char));
+	    char * caseArrivee3 = malloc(3*sizeof(char));
+				  
+	    /*Construction des cases de depart*/
+	    caseDepart1[0] = i; caseDepart1[1] = j + '0'; caseDepart1[2] =  '\0';
+	    tabMouvement[0] = caseDepart1;
+	    caseDepart2[0] = i2; caseDepart2[1] = j2 + '0'; caseDepart2[2] =  '\0';
+	    tabMouvement[1] = caseDepart2;
+	    caseDepart3[0] = i3; caseDepart3[1] = j3 + '0'; caseDepart3[2] =  '\0';
+	    tabMouvement[2] = caseDepart3;
+
+	    /*Construction du coup a tester*/ 
+	    caseArrivee1[0] = i + coupsPossibles[k][0]; caseArrivee1[1] = j + '0' + coupsPossibles[k][1]; caseArrivee1[2] = '\0';
+	    tabMouvement[3] = caseArrivee1;
+	    caseArrivee2[0] = i2 + coupsPossibles[k][0]; caseArrivee2[1] = j2 + '0' + coupsPossibles[k][1]; caseArrivee2[2] = '\0';
+	    tabMouvement[4] = caseArrivee2;
+	    caseArrivee3[0] = i3 + coupsPossibles[k][0]; caseArrivee3[1] = j3 + '0' + coupsPossibles[k][1]; caseArrivee3[2] = '\0';
+	    tabMouvement[5] = caseArrivee3;
+	    /*Construction du mouvement correspondant*/
+	    p_move commande = {tabMouvement, 6, couleur};
+			
+			
+	    /*On ajoute le coup au tableau s'il est possible*/
+	    if(move_is_possible(b, &commande) >0){
+	      tabLen++;
+	      tab = realloc(tab, sizeof(p_move) * tabLen);
+	      tab[tabLen-1] = commande;
+	      /*printf("Depart : %s %s %s, Arrivee : %s %s %s\n", tabMouvement[0], tabMouvement[1], tabMouvement[2], tabMouvement[3], tabMouvement[4], tabMouvement[5]);*/
+	    }
+	  }	
+	}
+      }
+    }
+    *length = tabLen; 
+  }
   return tab;
 }
 
@@ -373,14 +462,18 @@ int main(){
   
   char *coups2[6] = {"C3","C4","C5","D3","D4","D5"};
   p_move commande2 = {coups2, 6, 'B'};
-  int move_possible = move_is_possible(&b, &commande2);
-  printf("Le coup est est il faisable ? %d\n", move_possible);
+  int move_possible2 = move_is_possible(&b, &commande2);
+  printf("Le coup est est il faisable ? %d\n", move_possible2);
   if(move_possible > 0){
     do_move(&b, &commande2);
     display_board(&b);
   }
   
   //Test
-  possible_movements(&b, 'B');
+  printf("\nTest des coups possible :\n");
+  int a = 5;
+  int *taille = &a;
+  possible_movements(&b, 'B', taille);
   return 0;
-}*/
+}
+*/
