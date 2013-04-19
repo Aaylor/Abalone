@@ -18,9 +18,9 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
             else if (str_cmp(*(argv + position), "robot"))
             {
                 if (c == 'B')
-                    *player_b = 0;
+                    *player_b = EASY_AI;
                 else
-                    *player_n = 0;
+                    *player_n = EASY_AI;
             }
             else if (str_cmp(*(argv + position), "humain"))
             {
@@ -46,7 +46,8 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                 return 0;
             }
             *load_game = 1;
-            *filename = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position));
+            if ((*filename = strcpy(malloc((strlen(*(argv + position)) + 1) * sizeof(char)), *(argv + position))) == NULL)
+                fprintf(stderr, "Erreur dans la copie...\n");
         }
         else
             fprintf(stderr, "Unknown argument : %s\n", *(argv + position));
@@ -58,12 +59,11 @@ int main(int argc, char **argv)
 {
     int player_b = H_PLAYER, player_n = H_PLAYER, test_mode = 0, load_game = 0;
     char *filename;
+
+    srand(time(NULL));
+    
     parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
 
-    /*
-     * Modify the way to initiate those variables ?
-     * (maybe use local variable instead of global ?)
-     */
     play_game(player_b, player_n, test_mode, load_game);
     return EXIT_SUCCESS;
 }

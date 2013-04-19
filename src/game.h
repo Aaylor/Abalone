@@ -5,6 +5,7 @@
 
 #include "utility.h"
 #include "board.h"
+#include "ai.h"
 
 #define PROMPT_B "Joueur Blanc > "
 #define PROMPT_N "Joueur Noir  > "
@@ -36,7 +37,16 @@ p_move *rework_move(char *);
  */
 int play_game(int, int, int, int);
 
+/*
+ *  Entirely free the p_move struct
+ */
 void free_p_move(p_move *);
+
+/*
+ *  Function use to end the game.
+ *  It frees the command variable and the board
+ */
+void end_game(char **, board**);
 
 #endif
 

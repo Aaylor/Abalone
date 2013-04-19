@@ -303,7 +303,7 @@ void do_move(board *b, p_move* commande){
 }
 
 /*Fonction qui renvoit un tableau contenant toutes les commandes possibles*/
-p_move* possible_movements(board *b, player couleur){
+p_move* possible_movements(board *b, player couleur, int *length){
   int i, j,k;
   int coupsPossibles[6][2] = {{0,1},{1,1},{1,0},{0,-1},{-1,-1},{-1,0}};
   
@@ -340,7 +340,7 @@ p_move* possible_movements(board *b, player couleur){
       }
     }
   }
-  
+  *length = tabLen; 
   return tab;
 }
 
