@@ -12,5 +12,8 @@ $(EXECUTABLE): $(OBJECTS)
 launch:
 	./bin/abalone
 
+tm:
+	./bin/abalone -t < bin/test.txt
+
 clean:
 	rm -f $(EXECUTABLE) $(OBJECTS)
