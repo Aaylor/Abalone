@@ -191,7 +191,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 char *prompt = (current_player == 'B' ? PROMPT_B : PROMPT_N);
                 fprintf(stdout, "#%d %s", coup, prompt);
             }
-            if (fscanf(stdin, "%s", command) == EOF)
+            if (fscanf(stdin, "%50s", command) == EOF)
                 return 1;
             if (!test_mode)
                 while ((flush = getchar()) != '\n' && flush != EOF);
