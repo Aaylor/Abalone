@@ -49,13 +49,17 @@ board *init_board(board*b){
 
 /* Affiche le plateau */
 void display_board(board *b){
-  char* color_text = 0;
+  char *color_background = "47", *color_board = "32", *color_B = "34", *color_N = "30", *color_text;
   char i;
   int j;
   /*Partie haute*/
-  printf("       ____________\n");
+  set_colot_text(color_background);/*Couleur de fond*/
+  set_colot_text(color_board);/*Couleur du plateau*/
+  printf("\t       ____________\t\t\n");
   for(i='I'; i >= 'A';i--){
-    /*Partie droite du plateau*/
+    set_colot_text(color_board);
+    /*Partie gauche du plateau*/
+    putchar('\t');
     if(i == 'I') printf("    I / ");
     else if(i == 'H') printf("   H / ");
     else if(i == 'G') printf("  G / ");
@@ -68,22 +72,25 @@ void display_board(board *b){
     /*Dessin du corps du plateau*/
     for(j=1; j <= 9; j++){
       if(b->tab[c_to_key(i)][i_to_key(j)] != '0'){
-	color_text = (b->tab[c_to_key(i)][i_to_key(j)] == 'B') ? "34" : (b->tab[c_to_key(i)][i_to_key(j)] == 'N') ? "30" : "0";
+	color_text = (b->tab[c_to_key(i)][i_to_key(j)] == 'B') ? color_B : (b->tab[c_to_key(i)][i_to_key(j)] == 'N') ? color_N : color_board;
 	set_colot_text(color_text);
 	printf("%c ", b->tab[c_to_key(i)][i_to_key(j)]);
       }
     }
-    set_colot_text("0");
-    /*Partie gauche du plateau*/
-    if(i<= 'I' && i >= 'F') printf(" \\ \n");
-    else if (i == 'E') printf(" | \n");
-    else if (i == 'D') printf(" / \n");
-    else if (i == 'C') printf(" / 9\n");
-    else if (i == 'B') printf(" / 8\n");
-    else if (i == 'A') printf(" / 7\n");
+    /*Partie droite du plateau*/
+    set_colot_text(color_board);
+    if(i<= 'I' && i >= 'F') printf(" \\\t");
+    else if (i == 'E') printf(" |");
+    else if (i == 'D') printf(" /\t");
+    else if (i == 'C') printf(" / 9");
+    else if (i == 'B') printf(" / 8\t");
+    else if (i == 'A') printf(" / 7\t");
+    putchar('\t'); putchar('\n');
   }
   /*Partie basse*/
-  printf("       ------------ 6\n           1 2 3 4 5\n");
+  printf("\t       ------------ 6\t\t\n\t           1 2 3 4 5\t\t");
+  set_colot_text("0");
+  putchar('\n');
 }
 
 /* min_col renvoie le numero de l'element minimal de la ligne l (la numero, pas l'indice de tab) */
@@ -469,7 +476,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-/*
+
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -490,7 +497,7 @@ int main(){
     do_move(&b, &commande2);
     display_board(&b);
   }
-
+/*
   //Test
   printf("\nTest des coups possible :\n");
   int taille;
@@ -505,6 +512,6 @@ int main(){
     }
     putchar('\n');
   }
+  */
   return 0;
 }
-*/
