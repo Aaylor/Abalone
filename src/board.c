@@ -3,6 +3,8 @@
 #include <math.h>
 #include <string.h>
 
+
+
 /*  Créer et renvoie un plateau initialisé  */
 board create_new_board(){
   board b;
@@ -197,39 +199,39 @@ int move_is_possible(board *b, p_move *commande){
   /*Les cases doivent avoir un sens*/
   for(i =0; i < tabLen; i++){
     if(tabMove[i][0] < 'A' || tabMove[i][0] > 'I' || tabMove[i][1] < '1' || tabMove[i][1] > '9')
-      return -11;
+      return NOT_POSSIBLE_SQUARE_HAS_NO_SENS;
   }
   /*Les cases de départ doivent contenir les billes du joueur*/
   for(i = 0; i < tabLen/2; i++){
     if(b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != joueur)
-      return -1;
+      return NOT_POSSIBLE_NO_PLAYER_MARBLE;
   }
   /*Les cases de depart ne doivent pas comporter des cases identiques, idem pour les cases d'arrivee*/
   for(i = 0; i < tabLen; i++){
     for(j = i + 1;((i < tabLen/2) && (j < tabLen/2)) || ((i >= tabLen/2) && (j < tabLen)); j++){
       if(!(strcmp(tabMove[i], tabMove[j]))) 
-	return -2;
+	return NOT_POSSIBLE_SQUARES_IDENTICAL;
     }
   } 
   for(i = 0; i < tabLen/2; i++){
     for(j = tabLen/2; j< tabLen; j++){
       if(!(strcmp(tabMove[i], tabMove[j]))) 
-	return -2;
+	return NOT_POSSIBLE_SQUARES_IDENTICAL;
     }
   } 
   /*Les cases de depart doivent etre adjacente, idem pour les cases d'arrivee*/
   if(!(marbles_are_adjacent(tabMove, tabLen/2)) || !(marbles_are_adjacent(&tabMove[tabLen/2], tabLen/2)))
-    return -3;
+    return NOT_POSSIBLE_SQUARES_NON_ADJACENT;
   /*Les cases de depart doivent etre adjacente aux cases d'arrivee*/
   for(i = 0; i < tabLen/2; i++){
     char* tabDepartArrivee[2];
     tabDepartArrivee[0] = tabMove[i]; tabDepartArrivee[1] = tabMove[i+tabLen/2];
     if(marbles_are_adjacent(tabDepartArrivee, 2) == 0) 
-      return -3;
+      return NOT_POSSIBLE_SQUARES_NON_ADJACENT;
   }
   /*Les cases de depart doivent etre dans le même alignement, idem pour les cases d'arrivee*/
   if(marbles_alignement(tabMove, tabLen/2) == 0 || marbles_alignement(&tabMove[tabLen/2], tabLen/2) ==0)
-    return -4;
+    return NOT_POSSIBLE_SQUARES_NON_ALIGNED;
 
   /*LE COUP EST-IL FAISABLE PAR RAPPORT AUX REGLES DE JEU ?*/
   /*DEPLACEMENT LATERAL*/
@@ -238,16 +240,16 @@ int move_is_possible(board *b, p_move *commande){
     if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.'){
       /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
       if(does_move_eject_marble(b, commande) == 1){
-	return -12;
+	return NOT_POSSIBLE_PLAYER_MARBLE_EJECTION;
       }
       else{
-	return 1;
+	return LATERAL_MOVEMENT_POSSIBLE;
       }
     }
   if(tabLen > 2 &&  marbles_alignement(tabMove, tabLen) == 0){
     for(i=tabLen/2; i < tabLen; i++)
       if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
-	return -5;
+	return NOT_POSSIBLE_ARRIVAL_SQUARE_NOT_EMPTY;
   }
   /*DEPLACEMENT EN LIGNE*/
   /*Les conditions d'acceptation :*/
@@ -281,17 +283,17 @@ int move_is_possible(board *b, p_move *commande){
       if(compteurJ < compteurA) return -10; /*+ de bille adverses*/
       /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
       if(does_move_eject_marble(b, commande) == 1){
-	return -12;
+	return NOT_POSSIBLE_PLAYER_MARBLE_EJECTION;
       }
       else{
-	return 2;/*Pas de soucis*/
+	return LINE_MOVEMENT_POSSIBLE;/*Pas de soucis*/
       }
     }
     /*Cas qui n'a pas été traité*/
-    return -666;
+    return NOT_POSSIBLE_FOR_NO_REASON;
   }
   /*Aucun soucis detecté a priori */
-  return 666;
+  return POSSIBLE_FOR_NO_REASON;
 }
 
 /*Renvoie 1 si le mouvement ejecte une bille, 0 sinon*/
@@ -476,7 +478,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -497,7 +499,7 @@ int main(){
     do_move(&b, &commande2);
     display_board(&b);
   }
-/*
+
   //Test
   printf("\nTest des coups possible :\n");
   int taille;
@@ -512,6 +514,7 @@ int main(){
     }
     putchar('\n');
   }
-  */
+  
   return 0;
 }
+*/
