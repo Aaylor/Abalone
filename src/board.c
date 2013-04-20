@@ -50,10 +50,10 @@ board *init_board(board*b){
 /* Affiche le plateau */
 void display_board(board *b){
   char* color_text = 0;
-  /*Partie haute*/
-  printf("       ____________\n");
   char i;
   int j;
+  /*Partie haute*/
+  printf("       ____________\n");
   for(i='I'; i >= 'A';i--){
     /*Partie droite du plateau*/
     if(i == 'I') printf("    I / ");
@@ -176,6 +176,7 @@ int marbles_alignement(char **tab, int tabLen){
   _-9 : Coups Lateral IMPOSSIBLE : egalite de billes joueur et adverses dans l'alignement
   _-10 : Coups Lateral IMPOSSIBLE : + de billes adverses que de bille du joueur dans l'alignement
   _-11 Une case n'a aucun sens
+  _-12 : Ejection d'une bille du joueur
   _-666 : Coups Lateral non capturé; 666 : coups quelconque non capturé (pour le debugage)
 */
 int move_is_possible(board *b, p_move *commande){
@@ -226,14 +227,20 @@ int move_is_possible(board *b, p_move *commande){
   /*DEPLACEMENT LATERAL*/
   /*Le joueur deplace une seule bille OU la direction choisie n'est pas dans l'alignement de la rangee de bille deplacee : toutes les cases d'arrivee doivent etre vide*/  
   if(tabLen == 2)
-    if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.')
-      return 1;
+    if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.'){
+      /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
+      if(does_move_eject_marble(b, commande) == 1){
+	return -12;
+      }
+      else{
+	return 1;
+      }
+    }
   if(tabLen > 2 &&  marbles_alignement(tabMove, tabLen) == 0){
     for(i=tabLen/2; i < tabLen; i++)
       if((b->tab[c_to_key(tabMove[i][0])][tabMove[i][1] - '1'] != '.'))
 	return -5;
   }
-
   /*DEPLACEMENT EN LIGNE*/
   /*Les conditions d'acceptation :*/
   /*La case d'arrivee est libre, dans ce cas le coup est possible*/
@@ -263,15 +270,43 @@ int move_is_possible(board *b, p_move *commande){
       if(compteurJ > 3) return -8;/*Trop de bille du joueur*/
       if(compteurJ == compteurA) return -9;/*Egalite des bille*/
       if(compteurJ < compteurA) return -10; /*+ de bille adverses*/
-      return 2;/*Pas de soucis*/
+      /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
+      if(does_move_eject_marble(b, commande) == 1){
+	return -12;
+      }
+      else{
+	return 2;/*Pas de soucis*/
+      }
     }
-
     /*Cas qui n'a pas été traité*/
     return -666;
   }
-
   /*Aucun soucis detecté a priori */
   return 666;
+}
+
+/*Renvoie 1 si le mouvement ejecte une bille, 0 sinon*/
+int does_move_eject_marble(board *b, p_move* commande){
+  int tabLen = commande->length;
+  char **tabMove = commande->squares;
+  /*Calcul de la direction du mouvement*/
+  int variationX = tabMove[tabLen/2][1] - tabMove[0][1], variationY = tabMove[tabLen/2][0] - tabMove[0][0];
+  /*Toutes les cases de depart son successivement traitees*/
+  int j;
+  for (j=0; j < tabLen/2; j++){
+    int originY = c_to_key(tabMove[j][0]), originX =  tabMove[j][1] - '1';
+    /*On va derouler la ligne jusqu'au prochain vide*/
+    int i = 0;
+    char caseActuelle;
+    while((b->tab[originY + i*variationY][originX + i*variationX] != '.' && b->tab[originY + i*variationY][originX + i*variationX] != '0') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
+      caseActuelle = b->tab[originY + i*variationY][originX + i*variationX];
+      i++;
+    }
+    /*Il ne manque plus qu'a verifier si la derniere case avant un vide contient une bille du joueur*/
+    if(caseActuelle == commande->color && (originY + i*variationY > 8 || originY + i*variationY < 0 || originX + i*variationX > 8 || originX + i*variationX < 0 ||b->tab[originY + i*variationY][originX + i*variationX] == '0'))
+      return 1;
+  }
+  return 0;
 }
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
@@ -282,8 +317,6 @@ void do_move(board *b, p_move* commande){
   int j;
   /*Calcul de la direction du mouvement*/
   int variationX = tabMove[tabLen/2][1] - tabMove[0][1], variationY = tabMove[tabLen/2][0] - tabMove[0][0];
-  printf("Depart : %s, Arrivee : %s\n", tabMove[0], tabMove[tabLen/2]);
-  printf("Variation X : %d, Variation Y : %d\n", variationX, variationY);
   /*Toutes les casesde depart son successivement geree*/
   for (j=0; j < tabLen/2; j++){
     int originY = c_to_key(tabMove[j][0]), originX =  tabMove[j][1] - '1';
@@ -390,7 +423,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	int keyi3 = c_to_key(i2)+lignesPossible[l][0], keyj3 = i_to_key(j2)+lignesPossible[l][1];
 	if(keyi3 < 9 && keyj3 < 9 && b->tab[c_to_key(i)][i_to_key(j)] == couleur && b->tab[keyi2][keyj2] == couleur && b->tab[keyi3][keyj3] == couleur){/*On selectionne les cases du joueur*/
 	  for(k=0; k<6; k++){
-	    char **tabMouvement = malloc(4 * sizeof(char*));
+	    char **tabMouvement = malloc(6 * sizeof(char*));
 	    char *caseDepart1 = malloc(3*sizeof(char));
 	    char *caseDepart2 = malloc(3*sizeof(char));
 	    char *caseDepart3 = malloc(3*sizeof(char));
@@ -421,14 +454,13 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	      tabLen++;
 	      tab = realloc(tab, sizeof(p_move) * tabLen);
 	      tab[tabLen-1] = commande;
-	      /*printf("Depart : %s %s %s, Arrivee : %s %s %s\n", tabMouvement[0], tabMouvement[1], tabMouvement[2], tabMouvement[3], tabMouvement[4], tabMouvement[5]);*/
 	    }
 	  } 
 	}
       }
     }
-    *length = tabLen; 
   }
+  *length = tabLen; 
   return tab;
 }
 
@@ -459,6 +491,7 @@ int main(){
   b.tab[c_to_key('E')][i_to_key(3)] = 'B';
   display_board(&b);
 
+  
   char *coups2[6] = {"C3","C4","C5","D3","D4","D5"};
   p_move commande2 = {coups2, 6, 'B'};
   int move_possible2 = move_is_possible(&b, &commande2);
@@ -470,9 +503,18 @@ int main(){
 
   //Test
   printf("\nTest des coups possible :\n");
-  int a = 5;
-  int *taille = &a;
-  possible_movements(&b, 'B', taille);
+  int taille;
+  p_move* moves = possible_movements(&b, 'B', &taille);
+  int l, k;
+  printf("%d coups trouvés :\n", taille);
+  for(l = 0; l < taille; l++){
+    for(k=0; k < moves[l].length; k++){
+      if(k == moves[l].length/2)
+	printf(": ");
+      printf("%s ", moves[l].squares[k]);
+    }
+    putchar('\n');
+  }
   return 0;
 }
 */
