@@ -155,16 +155,15 @@ void free_p_move(p_move *move)
    free(move);
 }
 
-void end_game(char **command, board **game_board)
+void end_game(char **command)
 {
     free(*command);     *command = NULL;
-    free(*game_board);  *game_board = NULL;
 }
 
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
 {
     /*  Test mode will be included after... */
-    board   *game_board = malloc(sizeof(board));
+    board   game_board;
     char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
     char    flush;
     int     coup = 1;
@@ -175,10 +174,10 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     }
     else
     {
-        init_board(game_board);
+        game_board = create_new_board();
     }
 
-    display_board(game_board);
+    display_board(&game_board);
     while( 1 )
     {
         player current_player = (coup & 1 ? 'B' : 'N');
@@ -206,25 +205,27 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
                  (current_player == 'N' && (n_player_statut & EASY_AI)) )
             {
-                ai_move = random_move(game_board, current_player);
+                ai_move = random_move(&game_board, current_player);
             }
             if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
                  (current_player == 'N' && (n_player_statut & MEDIUM_AI)) )
             {
                 fprintf(stdout, "faire jouer l'ia MEDIUM ici... *visible par la variable current_player*\n");
+
             }
             
-            do_move(game_board, ai_move);
+            fprintf(stdout, "#%d IA played\n", coup);
+            do_move(&game_board, ai_move);
             free_p_move(ai_move); ai_move = NULL;
-
+            
             coup++;
-            display_board(game_board);
+            display_board(&game_board); 
             continue;
         }
 
         if (str_cmp(command, "exit"))
         {   
-            end_game(&command, &game_board);
+            end_game(&command);
             return 1;
         }
         else if (0);
@@ -239,10 +240,10 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             p_move *new_command = rework_move(command);
             new_command->color = current_player;
            
-            m_return = move_is_possible(game_board, new_command);
+            m_return = move_is_possible(&game_board, new_command);
             if (m_return > 0)
             {
-                do_move(game_board, new_command);
+                do_move(&game_board, new_command);
             }
             else
             {
@@ -267,13 +268,12 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
          *  jetons sortis).
          *  Vérifier si il y a un gagnant.
          */
-        display_board(game_board);
+        display_board(&game_board);
 
         coup++;
     }
    
     free(command); command = NULL;
-    free(game_board); game_board = NULL;
 
     return 0;
 }
