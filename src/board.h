@@ -6,6 +6,8 @@
 typedef struct
 {
     char tab[BOARD_LENGTH][BOARD_LENGTH];
+  int ejected_marble_B;
+  int ejected_marble_N;
 } board;
 
 board create_new_board();

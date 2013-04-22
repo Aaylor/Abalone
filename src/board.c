@@ -9,6 +9,8 @@
 board create_new_board(){
   board b;
   init_board(&b);
+  b.ejected_marble_N = 0;
+  b.ejected_marble_B = 0;
   return b;
 }
 
