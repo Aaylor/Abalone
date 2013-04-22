@@ -74,6 +74,7 @@ p_move *heuristic_move(board *b, player cur_player)
     h_move = malloc(sizeof(p_move));
     ai_possible_movement = possible_movements(b, cur_player, &ai_p_move_length);
     
+    fprintf(stdout, "length : %d\n", ai_p_move_length);
 
     for (i = 0; i < ai_p_move_length; i++)
     {
@@ -103,7 +104,10 @@ p_move *heuristic_move(board *b, player cur_player)
              *(marble_ejection + count_marble_ejection) = (ai_possible_movement + i);
              fprintf(stdout, "%p - %p\n", *(marble_ejection + count_marble_ejection), (ai_possible_movement + i));
         }
-        else if( 1 )    /* if it move an opponent marble */
+        else if(!what_marble_does_move_ejects(b, (ai_possible_movement + i))
+                && (b->tab
+                    [c_to_key(((ai_possible_movement + i)->squares)[((ai_possible_movement + i)->length/2)][0])] \
+                    [((ai_possible_movement + i)->squares)[((ai_possible_movement + i)->length/2)][1] - '1'] != '.'))    /* if it move an opponent marble */
         {
             if (count_push_opponent_marble)
             {
