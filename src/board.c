@@ -296,7 +296,7 @@ int move_is_possible(board *b, p_move *commande){
   return POSSIBLE_FOR_NO_REASON;
 }
 
-/*Renvoie 1 si le mouvement ejecte une bille, 0 sinon*/
+/*Renvoie 1 si le mouvement ejecte une bille du joueur, 0 sinon*/
 int does_move_eject_marble(board *b, p_move* commande){
   int tabLen = commande->length;
   char **tabMove = commande->squares;
@@ -308,14 +308,15 @@ int does_move_eject_marble(board *b, p_move* commande){
     int originY = c_to_key(tabMove[j][0]), originX =  tabMove[j][1] - '1';
     /*On va derouler la ligne jusqu'au prochain vide*/
     int i = 0;
-    char caseActuelle;
-    while((b->tab[originY + i*variationY][originX + i*variationX] != '.' && b->tab[originY + i*variationY][originX + i*variationX] != '0') && (originY + i*variationY >= 0 && originY + i*variationY < 9 &&  tabMove[0][1] - '1' >= 0 &&  tabMove[0][1] - '1' < 9)){
+    char caseActuelle = commande->color;
+    while((b->tab[originY + i*variationY][originX + i*variationX] != '.' && b->tab[originY + i*variationY][originX + i*variationX] != '0') && (originY + i*variationY >= 0 && originY + i*variationY < 9 && originX + i*variationX >= 0 &&  originX + i*variationX < 9)){
       caseActuelle = b->tab[originY + i*variationY][originX + i*variationX];
       i++;
     }
     /*Il ne manque plus qu'a verifier si la derniere case avant un vide contient une bille du joueur*/
-    if(caseActuelle == commande->color && (originY + i*variationY > 8 || originY + i*variationY < 0 || originX + i*variationX > 8 || originX + i*variationX < 0 ||b->tab[originY + i*variationY][originX + i*variationX] == '0'))
+    if(caseActuelle == commande->color && (originY + i*variationY > 8 || originY + i*variationY < 0 || originX + i*variationX > 8 || originX + i*variationX < 0 || b->tab[originY + i*variationY][originX + i*variationX] == '0')){
       return 1;
+    }
   }
   return 0;
 }
@@ -380,10 +381,10 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	    tab = realloc(tab, sizeof(p_move) * tabLen);
 	    tab[tabLen-1] = commande;
 	  }
-      else {
-        free(caseDepart); free(caseArrivee);
-        free(tabMouvement);
-      }
+	  else {
+	    free(caseDepart); free(caseArrivee);
+	    free(tabMouvement);
+	  }
 	} 
       }
     }
@@ -425,11 +426,11 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	      tab[tabLen-1] = commande;
 	      /*printf("Depart : %s %s, Arrivee : %s %s\n", tabMouvement[0], tabMouvement[1], tabMouvement[2], tabMouvement[3]);*/
 	    }
-        else{
-            free(caseDepart1); free(caseDepart2);
-            free(caseArrivee1); free(caseArrivee2);
-            free(tabMouvement);
-        }
+	    else{
+	      free(caseDepart1); free(caseDepart2);
+	      free(caseArrivee1); free(caseArrivee2);
+	      free(tabMouvement);
+	    }
 	  } 
 	}
       }
@@ -478,12 +479,12 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	      tab = realloc(tab, sizeof(p_move) * tabLen);
 	      tab[tabLen-1] = commande;
 	    }
-        else{
-            free(caseDepart1); free(caseDepart2);
-            free(caseDepart3); free(caseArrivee1);
-            free(caseArrivee2); free(caseArrivee3);
-            free(tabMouvement);
-        }
+	    else{
+	      free(caseDepart1); free(caseDepart2);
+	      free(caseDepart3); free(caseArrivee1);
+	      free(caseArrivee2); free(caseArrivee3);
+	      free(tabMouvement);
+	    }
 	  } 
 	}
       }
@@ -493,29 +494,19 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-
+/*
 int main(){
   board b = create_new_board();
   display_board(&b);
 
-  //Remplissage du damier
-  b.tab[c_to_key('E')][i_to_key(3)] = 'B';
-  b.tab[c_to_key('D')][i_to_key(3)] = 'B';
-  b.tab[c_to_key('F')][i_to_key(3)] = 'B';
-  b.tab[c_to_key('G')][i_to_key(3)] = 'B';
-  display_board(&b);
-  
-  //Test coup
-  char *coups2[6] = {"C3","C4","C5","D3","D4","D5"};
-  p_move commande2 = {coups2, 6, 'B'};
-  int move_possible2 = move_is_possible(&b, &commande2);
-  printf("Le coup est est il faisable ? %d\n", move_possible2);
-  if(move_possible2 > 0){
-    do_move(&b, &commande2);
-    display_board(&b);
-  }
-
   //Test
+  char *coups[2] = {"A2","A1"};
+  p_move commande = {coups, 2, 'B'};
+  int move_possible = move_is_possible(&b, &commande);
+  printf("Le coup est est il faisable ? %d\n", move_possible);
+    
+  
+  //Coups possible
   printf("\nTest des coups possible :\n");
   int taille;
   p_move* moves = possible_movements(&b, 'B', &taille);
@@ -529,8 +520,6 @@ int main(){
     }
     putchar('\n');
   }
-  
   return 0;
 }
-
-  
+*/
