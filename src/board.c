@@ -502,7 +502,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-
+/*
   int main(){
   board b = create_new_board();
   display_board(&b);
@@ -530,3 +530,4 @@ p_move* possible_movements(board *b, player couleur, int *length){
   }
   return 0;
   }
+*/ 
