@@ -380,6 +380,10 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	    tab = realloc(tab, sizeof(p_move) * tabLen);
 	    tab[tabLen-1] = commande;
 	  }
+      else {
+        free(caseDepart); free(caseArrivee);
+        free(tabMouvement);
+      }
 	} 
       }
     }
@@ -421,6 +425,11 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	      tab[tabLen-1] = commande;
 	      /*printf("Depart : %s %s, Arrivee : %s %s\n", tabMouvement[0], tabMouvement[1], tabMouvement[2], tabMouvement[3]);*/
 	    }
+        else{
+            free(caseDepart1); free(caseDepart2);
+            free(caseArrivee1); free(caseArrivee2);
+            free(tabMouvement);
+        }
 	  } 
 	}
       }
@@ -469,6 +478,12 @@ p_move* possible_movements(board *b, player couleur, int *length){
 	      tab = realloc(tab, sizeof(p_move) * tabLen);
 	      tab[tabLen-1] = commande;
 	    }
+        else{
+            free(caseDepart1); free(caseDepart2);
+            free(caseDepart3); free(caseArrivee1);
+            free(caseArrivee2); free(caseArrivee3);
+            free(tabMouvement);
+        }
 	  } 
 	}
       }
