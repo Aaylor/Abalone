@@ -5,8 +5,10 @@
 #include "game.h"
 #include "utility.h"
 
-p_move *random_move(board *, player);
-p_move *heuristic_move(board *, player);
+void    free_array(p_move *, int, p_move *);
+p_move  *random_move(board *, player);
+int get_ponderation_value(p_move *);
+p_move  *heuristic_move(board *, player);
 
 #endif
 
