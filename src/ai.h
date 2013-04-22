@@ -6,6 +6,7 @@
 #include "utility.h"
 
 p_move *random_move(board *, player);
+p_move *heuristic_move(board *, player);
 
 #endif
 

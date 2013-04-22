@@ -246,14 +246,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
                  (current_player == 'N' && (n_player_statut & MEDIUM_AI)) )
             {
+                heuristic_move(&game_board, current_player);
                 fprintf(stdout, "faire jouer l'ia MEDIUM ici... *visible par la variable current_player*\n");
-
             }
-            
+           /* 
             fprintf(stdout, "#%d IA played\n", coup);
             do_move(&game_board, ai_move);
             free_p_move(ai_move); ai_move = NULL;
-            
+            */
             coup++;
             display_board(&game_board); 
             continue;
