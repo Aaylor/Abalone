@@ -47,6 +47,8 @@ int play_game(int, int, int, int);
  */
 void free_p_move(p_move *);
 
+int game_state(board *);
+
 /*
  *  Function use to end the game.
  *  It frees the command variable and the board

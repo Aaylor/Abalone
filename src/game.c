@@ -191,6 +191,16 @@ void free_p_move(p_move *move)
    free(move);
 }
 
+int game_state(board *b)
+{
+    fprintf(stdout, "b %d - n %d\n", b->ejected_marble_B, b->ejected_marble_N);
+    if (b->ejected_marble_N >= 6)
+        return 1;
+    if (b->ejected_marble_B >= 6)
+        return -1;
+    return 0;
+}
+
 void end_game(char **command)
 {
     free(*command);     *command = NULL;
@@ -234,6 +244,47 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 while ((flush = getchar()) != '\n' && flush != EOF);
             else
                 fprintf(stdout, "#%d %s\n", coup, command);
+        
+            if (str_cmp(command, "exit"))
+            {   
+                end_game(&command);
+                return 1;
+            }
+            else if (0);
+            else if (!command_validation(command))
+            {
+                fprintf(stderr, "WRONG COMMAND, PLAY AGAIN\n");
+                continue;
+            }
+            else
+            {
+                int m_return;
+                p_move *new_command = rework_move(command);
+                new_command->color = current_player;
+           
+                m_return = move_is_possible(&game_board, new_command);
+                if (m_return > 0)
+                {
+                    do_move(&game_board, new_command);
+                }
+                else
+                {
+                    if (!test_mode)
+                    {
+                        fprintf(stderr, "Coup impossible...\n");
+                        display_error_message(m_return);
+                        continue;
+                    }
+                    else
+                    {
+                        display_error_message(m_return);
+                        fprintf(stderr, "TEST MODE WILL EXIT...\n");
+                        return 1;
+                    }
+                }
+            
+                free_p_move(new_command); new_command = NULL;
+            }
         }
         else
         {
@@ -255,50 +306,8 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
   /*              free_p_move(ai_move); ai_move = NULL; */
            
             coup++;
-            display_board(&game_board); 
-            continue;
         }
 
-        if (str_cmp(command, "exit"))
-        {   
-            end_game(&command);
-            return 1;
-        }
-        else if (0);
-        else if (!command_validation(command))
-        {
-            fprintf(stderr, "WRONG COMMAND, PLAY AGAIN\n");
-            continue;
-        }
-        else
-        {
-            int m_return;
-            p_move *new_command = rework_move(command);
-            new_command->color = current_player;
-           
-            m_return = move_is_possible(&game_board, new_command);
-            if (m_return > 0)
-            {
-                do_move(&game_board, new_command);
-            }
-            else
-            {
-                if (!test_mode)
-                {
-                    fprintf(stderr, "Coup impossible...\n");
-                    display_error_message(m_return);
-                    continue;
-                }
-                else
-                {
-                    display_error_message(m_return);
-                    fprintf(stderr, "TEST MODE WILL EXIT...\n");
-                    return 1;
-                }
-            }
-            
-            free_p_move(new_command); new_command = NULL;
-        }
 
         /*
          *  Effectuer les mouvements.
@@ -307,6 +316,19 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
          *  Vérifier si il y a un gagnant.
          */
         display_board(&game_board);
+        
+        int state = game_state(&game_board);
+        if (state < 0)
+        {
+            fprintf(stdout, "NOIR WIN\n");
+            return 1;
+        }
+        if (state > 0)
+        {
+            fprintf(stdout, "BLANC WIN\n");
+            return 1;
+        }
+        
 
         coup++;
     }
