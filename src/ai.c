@@ -84,11 +84,11 @@ p_move *heuristic_move(board *b, player cur_player)
     }
 
     if ( marble_ejection );
-        /* choose randomly here */
+        /*  choose according to the barycentre...   */
     else if( push_opponent_marble );
-        /* choose randomly here */
+        /*  choose according to the barycentre...   */
     else;
-        /* ah */
+        /*  choose according to the barycentre...   */
 
     return h_move;
 }
