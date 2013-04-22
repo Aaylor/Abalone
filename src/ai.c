@@ -13,18 +13,16 @@ p_move *random_move(board *b, player cur_player)
     easy_ai_move->length    = (ai_possible_movement + random_move_num)->length;
     easy_ai_move->color     = cur_player;
 
-    /*
     for(i = 0; i < ai_p_move_length; i++)
     {
         if (i != random_move_num)
         {
-            for(j = 0; j < (ai_possible_movement + i)->length; j++);
+            for(j = 0; j < (ai_possible_movement + i)->length; j++)
                 free(*((ai_possible_movement + i)->squares + j));
             free((ai_possible_movement + i)->squares);
         }
     }
     free(ai_possible_movement);
-    */
     
     return easy_ai_move;
 }
