@@ -239,7 +239,7 @@ int move_is_possible(board *b, p_move *commande){
   if(tabLen == 2)
     if(b->tab[c_to_key(tabMove[1][0])][tabMove[1][1] - '1'] == '.'){
       /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
-      if(does_move_eject_marble(b, commande) == 1){
+      if(what_marble_does_move_ejects(b, commande) == joueur){
 	return NOT_POSSIBLE_PLAYER_MARBLE_EJECTION;
       }
       else{
@@ -282,7 +282,7 @@ int move_is_possible(board *b, p_move *commande){
       if(compteurJ == compteurA) return -9;/*Egalite des bille*/
       if(compteurJ < compteurA) return -10; /*+ de bille adverses*/
       /*Dernier test : Est ce qu'on ejecterai une bille du joueur :*/
-      if(does_move_eject_marble(b, commande) == 1){
+      if(what_marble_does_move_ejects(b, commande) == joueur){
 	return NOT_POSSIBLE_PLAYER_MARBLE_EJECTION;
       }
       else{
@@ -296,8 +296,8 @@ int move_is_possible(board *b, p_move *commande){
   return POSSIBLE_FOR_NO_REASON;
 }
 
-/*Renvoie 1 si le mouvement ejecte une bille du joueur, 0 sinon*/
-int does_move_eject_marble(board *b, p_move* commande){
+/*Renvoie 'B' ou 'N' si le mouvement ejecte cette bille, 0 sinon*/
+int what_marble_does_move_ejects(board *b, p_move* commande){
   int tabLen = commande->length;
   char **tabMove = commande->squares;
   /*Calcul de la direction du mouvement*/
@@ -314,8 +314,8 @@ int does_move_eject_marble(board *b, p_move* commande){
       i++;
     }
     /*Il ne manque plus qu'a verifier si la derniere case avant un vide contient une bille du joueur*/
-    if(caseActuelle == commande->color && (originY + i*variationY > 8 || originY + i*variationY < 0 || originX + i*variationX > 8 || originX + i*variationX < 0 || b->tab[originY + i*variationY][originX + i*variationX] == '0')){
-      return 1;
+    if((caseActuelle == 'B' || caseActuelle == 'N') && (originY + i*variationY > 8 || originY + i*variationY < 0 || originX + i*variationX > 8 || originX + i*variationX < 0 || b->tab[originY + i*variationY][originX + i*variationX] == '0')){
+      return caseActuelle;
     }
   }
   return 0;
@@ -494,8 +494,8 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-/*
-int main(){
+
+  int main(){
   board b = create_new_board();
   display_board(&b);
 
@@ -513,13 +513,12 @@ int main(){
   int l, k;
   printf("%d coups trouvés :\n", taille);
   for(l = 0; l < taille; l++){
-    for(k=0; k < moves[l].length; k++){
-      if(k == moves[l].length/2)
-	printf(": ");
-      printf("%s ", moves[l].squares[k]);
-    }
-    putchar('\n');
+  for(k=0; k < moves[l].length; k++){
+  if(k == moves[l].length/2)
+  printf(": ");
+  printf("%s ", moves[l].squares[k]);
+  }
+  putchar('\n');
   }
   return 0;
-}
-*/
+  }
