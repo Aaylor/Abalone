@@ -478,7 +478,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-/*
+
 int main(){
   board b = create_new_board();
   display_board(&b);
@@ -489,7 +489,7 @@ int main(){
   b.tab[c_to_key('F')][i_to_key(3)] = 'B';
   b.tab[c_to_key('G')][i_to_key(3)] = 'B';
   display_board(&b);
-
+  
   //Test coup
   char *coups2[6] = {"C3","C4","C5","D3","D4","D5"};
   p_move commande2 = {coups2, 6, 'B'};
@@ -517,4 +517,5 @@ int main(){
   
   return 0;
 }
-*/
+
+  
