@@ -304,8 +304,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             fprintf(stdout, "#%d IA played\n", coup);
             do_move(&game_board, ai_move);
   /*              free_p_move(ai_move); ai_move = NULL; */
-           
-            coup++;
         }
 
 
