@@ -33,6 +33,11 @@ char **split_command(char *, int *);
 p_move *rework_move(char *);
 
 /*
+ *  Display the error message according to the number
+ */
+void display_error_message(int);
+
+/*
  *  Main function where users can play
  */
 int play_game(int, int, int, int);

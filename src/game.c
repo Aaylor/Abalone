@@ -146,6 +146,42 @@ p_move *rework_move(char *command)
     }
 }
 
+void display_error_message(int err_num)
+{
+    switch(err_num)
+    {
+        case NOT_POSSIBLE_NO_PLAYER_MARBLE:
+            fprintf(stderr, "Pas de pion présent sur l'une des cases séléctionnées...\n");
+            break;
+        case NOT_POSSIBLE_SQUARES_IDENTICAL:
+            fprintf(stderr, "Les cases séléctionnées sont identiques...\n");
+            break;
+        case NOT_POSSIBLE_SQUARES_NON_ADJACENT:
+            fprintf(stderr, "Les cases séléctionnées ne sont pas adjacentes...\n");
+            break;
+        case NOT_POSSIBLE_SQUARES_NON_ALIGNED:
+            fprintf(stderr, "Les cases séléctionnées ne sont pas alignées...\n");
+            break;
+        case NOT_POSSIBLE_ARRIVAL_SQUARE_NOT_EMPTY:
+            fprintf(stderr, "L'une des cases d'arrivées n'est pas vide...\n");
+            break;
+        case NOT_POSSIBLE_TOO_MUCH_RIVAL_MARBLES:
+        case NOT_POSSIBLE_EGAL_PLAYER_AND_RIVAL_MARBLES:
+        case NOT_POSSIBLE_MORE_RIVAL_MARBLES_THAN_PLAYER:
+            fprintf(stderr, "Vous n'avez pas assez de pions pour effectuer le mouvement (il vous en faut plus que l'adversaire)...\n");
+            break;
+        case NOT_POSSIBLE_TOO_MUCH_PLAYER_MARBLES:
+            fprintf(stderr, "Déplacement trop important de billes...\n");
+            break;
+        case NOT_POSSIBLE_PLAYER_MARBLE_EJECTION:
+            fprintf(stderr, "Ejection d'une de vos bille...\n");
+            break;
+        default:
+            fprintf(stderr, "Erreur...\n");
+            break;
+    }
+}
+
 void free_p_move(p_move *move)
 {
    int i = 0;
@@ -201,7 +237,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         }
         else
         {
-            p_move *ai_move = NULL;
+            p_move *ai_move;
             if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
                  (current_player == 'N' && (n_player_statut & EASY_AI)) )
             {
@@ -249,12 +285,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             {
                 if (!test_mode)
                 {
-                    fprintf(stderr, "ERR : %d, Coup impossible...\n", m_return);
+                    fprintf(stderr, "Coup impossible...\n");
+                    display_error_message(m_return);
                     continue;
                 }
                 else
                 {
-                    fprintf(stderr, "COMMAND ERROR. TEST MODE WILL EXIT.\n");
+                    display_error_message(m_return);
+                    fprintf(stderr, "TEST MODE WILL EXIT...\n");
                     return 1;
                 }
             }
