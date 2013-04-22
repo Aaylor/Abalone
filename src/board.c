@@ -325,6 +325,12 @@ int what_marble_does_move_ejects(board *b, p_move* commande){
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
 void do_move(board *b, p_move* commande){
+  /*Avant d'effectuer le mouvement, on va verifier si une bille sera ejectee puis mettre a jouer les variable de billes ejectee*/
+  if(what_marble_does_move_ejects(b, commande) == 'B')
+    (b->ejected_marble_B)++;
+  else if (what_marble_does_move_ejects(b, commande) == 'N')
+    (b->ejected_marble_N)++;    
+  /*Mouvement*/
   int tabLen = commande->length;
   char **tabMove = commande->squares;
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
@@ -496,7 +502,7 @@ p_move* possible_movements(board *b, player couleur, int *length){
   return tab;
 }
 
-/*
+
   int main(){
   board b = create_new_board();
   display_board(&b);
@@ -524,4 +530,3 @@ p_move* possible_movements(board *b, player couleur, int *length){
   }
   return 0;
   }
-*/
