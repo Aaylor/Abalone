@@ -1,7 +1,7 @@
 #include "ai.h"
 
 static int ponderation_array[BOARD_LENGTH][BOARD_LENGTH] = \
-{{0, 0, 0, 1, 6, 6, 6, 6, 1 },    
+{{0, 0, 0, 0, 1, 1, 1, 1, 1 },    
  {0, 0, 0, 1, 6, 6, 6, 6, 1 },
  {0, 0, 1, 6, 7, 7, 7, 6, 1 }, 
  {0, 1, 6, 7, 8, 8, 7, 6, 1 },
