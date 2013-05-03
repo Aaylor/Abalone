@@ -27,8 +27,8 @@
 #define player char
 
 #define H_PLAYER    0x000000f
-#define EASY_AI     0x00000f0
-#define MEDIUM_AI   0x0000f00
+#define VERY_EASY_AI     0x00000f0
+#define EASY_AI   0x0000f00
 /*
  *  Give the int value associated to the character to match to keys of the
  *  board.tab

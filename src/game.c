@@ -289,16 +289,15 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         else
         {
             p_move *ai_move;
-            if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
-                 (current_player == 'N' && (n_player_statut & EASY_AI)) )
+            if ( (current_player == 'B' && (b_player_statut & VERY_EASY_AI)) ||
+                 (current_player == 'N' && (n_player_statut & VERY_EASY_AI)) )
             {
                 ai_move = random_move(&game_board, current_player);
             }
-            if ( (current_player == 'B' && (b_player_statut & MEDIUM_AI)) ||
-                 (current_player == 'N' && (n_player_statut & MEDIUM_AI)) )
+            if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
+                 (current_player == 'N' && (n_player_statut & EASY_AI)) )
             {
-                ai_move = heuristic_move(&game_board, current_player);
-                fprintf(stdout, "faire jouer l'ia MEDIUM ici... *visible par la variable current_player*\n");
+                ai_move = easy_ai(&game_board, current_player);
             }
             
             fprintf(stdout, "#%d IA played\n", coup);
