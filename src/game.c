@@ -222,14 +222,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         game_board = create_new_board();
     }
 
-    int i = 0, j;
-    for (; i < BOARD_LENGTH; i++)
-    {
-        for (j = 0; j < BOARD_LENGTH; j++)
-            fprintf(stdout, "%c ", game_board.tab[i][j]);
-        putchar('\n');
-    }
-
     display_board(&game_board);
     while( 1 )
     {
