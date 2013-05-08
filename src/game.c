@@ -305,7 +305,8 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 m_return = move_is_possible(&game_board, new_command);
                 if (m_return > 0)
                 {
-					last_game_board = game_board; undo = 1;
+			last_game_board = game_board; 
+			undo = 1; redo = 0;
                     do_move(&game_board, new_command);
                 }
                 else
@@ -342,7 +343,8 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             }
             
             fprintf(stdout, "#%d IA played\n", coup);
-			last_game_board = game_board; undo = 1;
+		last_game_board = game_board; 
+		undo = 1; redo = 0;
             do_move(&game_board, ai_move);
   /*              free_p_move(ai_move); ai_move = NULL; */
         }
