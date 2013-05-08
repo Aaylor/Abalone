@@ -208,11 +208,10 @@ void end_game(char **command)
 
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
 {
-    /*  Test mode will be included after... */
-    board   game_board;
+    board   game_board, last_game_board;
     char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
     char    flush;
-    int     coup = 1;
+    int     coup = 1, undo = 0, redo = 0;
 
     if (load_game)
     {
@@ -221,6 +220,14 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
     else
     {
         game_board = create_new_board();
+    }
+
+    int i = 0, j;
+    for (; i < BOARD_LENGTH; i++)
+    {
+        for (j = 0; j < BOARD_LENGTH; j++)
+            fprintf(stdout, "%c ", game_board.tab[i][j]);
+        putchar('\n');
     }
 
     display_board(&game_board);
@@ -250,7 +257,48 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 end_game(&command);
                 return 1;
             }
-            else if (0);
+            else if (str_cmp(command, "undo"))
+			{
+				if (undo)
+				{
+					board tmp;
+
+					tmp = game_board;
+					game_board = last_game_board;
+					last_game_board = tmp;
+					display_board(&game_board);
+					
+					--coup;
+					undo = 0; redo = 1;
+					continue;
+				}
+				else
+				{
+					fprintf(stderr, "Undo unavailable...\n");
+					continue;
+				}
+			}
+			else if (str_cmp(command, "redo"))
+			{
+				if (redo)
+				{
+					board tmp;
+
+					tmp = game_board;
+					game_board = last_game_board;
+					last_game_board = tmp;
+					display_board(&game_board);
+					
+					++coup;
+					redo = 0;
+					continue;
+				}
+				else
+				{
+					fprintf(stderr, "Redo unavailable...\n");
+					continue;
+				}
+			}
             else if (!command_validation(command))
             {
                 fprintf(stderr, "WRONG COMMAND, PLAY AGAIN\n");
@@ -265,6 +313,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 m_return = move_is_possible(&game_board, new_command);
                 if (m_return > 0)
                 {
+					last_game_board = game_board; undo = 1;
                     do_move(&game_board, new_command);
                 }
                 else
@@ -301,17 +350,11 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             }
             
             fprintf(stdout, "#%d IA played\n", coup);
+			last_game_board = game_board; undo = 1;
             do_move(&game_board, ai_move);
   /*              free_p_move(ai_move); ai_move = NULL; */
         }
 
-
-        /*
-         *  Effectuer les mouvements.
-         *  Changer les états de certaines variables (notamment au niveau des
-         *  jetons sortis).
-         *  Vérifier si il y a un gagnant.
-         */
         display_board(&game_board);
         
         int state = game_state(&game_board);
@@ -325,7 +368,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             fprintf(stdout, "BLANC WIN\n");
             return 1;
         }
-        
 
         coup++;
     }
