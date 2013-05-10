@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     
     parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
 
-    play_game(player_b, player_n, test_mode, load_game);
+    play_game(player_b, player_n, test_mode, load_game, filename);
     return EXIT_SUCCESS;
 }
 

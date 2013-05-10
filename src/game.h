@@ -15,6 +15,14 @@
 
 #define CMD_MAX_SIZE 50
 
+#define change_player(cur) (cur == 'B' ? 'N' : 'B')
+
+int first_read(const char *);
+
+void read_file_to_load_game(board *, player *, const char *);
+
+int save_game(char, board *);
+
 /*
  *  Test is the command entered by the user meets the standards of this program.
  *  It must be like : <CHAR><INT>-(<CHAR><INT>-)<CHAR><INT>
