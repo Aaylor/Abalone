@@ -1,4 +1,4 @@
-SOURCES=src/ai.c src/board.c src/game.c src/interface.c src/main.c
+SOURCES=src/ai.c src/board.c src/game.c src/main.c
 OBJECTS=$(SOURCES:.c=.o)
 CFLAGS= -std=c89 -Wall -Wextra -pedantic -ansi -g
 EXECFOLDER=bin
