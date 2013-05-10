@@ -1,5 +1,62 @@
 #include "game.h"
 
+void read_file_to_load_game(board *b, const char *filename)
+{
+
+}
+
+int save_game(char next_player, board *b)
+{
+	int i, j;
+	char *filename, *complete_path;
+	char *incomplete_path = "../savefile/";
+	
+	fprintf(stdout, "La partie va être sauvegardée...\nChoisisez un nom de fichier (20 caractères maximum) : ");
+	filename = malloc(21 * sizeof(char));
+	complete_path = malloc(33 * sizeof(char));
+
+	if (filename)
+	{
+		fscanf(stdin, "%20s", filename); 
+		*(filename + 20) = '\0';
+	}
+	else
+	{
+		fprintf(stderr, "Erreur dans la création de la sauvegarde...\n");
+		free(filename); free(complete_path);
+		return -1;
+	}
+
+	strcpy(complete_path, incomplete_path);
+	strcat(complete_path, filename);
+
+	FILE *save_file = fopen(filename, "w");
+
+	if (!save_file)
+	{
+		fprintf(stderr, "Impossible de créer le fichier de sauvegarde... %s\n", complete_path);
+		free(filename); free(complete_path);
+		return -1;
+	}
+
+	fputc(next_player, save_file);
+	fputc(b->ejected_marble_B, save_file);
+	fputc(b->ejected_marble_N, save_file);
+
+	for (i = 0; i < BOARD_LENGTH; i++)
+	{
+		for(j = 0; j < BOARD_LENGTH; j++)
+		{
+			if (b->tab[i][j])
+				fputc(b->tab[i][j], save_file);
+		}
+	}
+
+	free(filename); free(complete_path);
+	fclose(save_file);
+	return 1;
+}
+
 int command_validation(const char *command)
 {
     int         err_num, match;
@@ -206,7 +263,7 @@ void end_game(char **command)
     free(*command);     *command = NULL;
 }
 
-int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game)
+int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game, char *filename)
 {
     board   game_board, last_game_board;
     char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
@@ -215,7 +272,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 
     if (load_game)
     {
-        /*  Load the game_board and every game information here ... */
+		read_file_to_load_game(&game_board, filename);
     }
     else
     {
@@ -290,6 +347,12 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 					fprintf(stderr, "Redo unavailable...\n");
 					continue;
 				}
+			}
+			else if (str_cmp(command, "save"))
+			{
+				save_game(	current_player,
+							&game_board	);
+				continue;
 			}
             else if (!command_validation(command))
             {

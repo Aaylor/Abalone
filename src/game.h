@@ -40,7 +40,7 @@ void display_error_message(int);
 /*
  *  Main function where users can play
  */
-int play_game(int, int, int, int);
+int play_game(int, int, int, int, char *);
 
 /*
  *  Entirely free the p_move struct
