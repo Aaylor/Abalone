@@ -2,195 +2,195 @@
 
 int first_read(const char *save_file)
 {
-	char buffer;
-	FILE *tmp_save_file;
-	int i, b_count, n_count;
+    char buffer;
+    FILE *tmp_save_file;
+    int i, b_count, n_count;
 
-	tmp_save_file = fopen(save_file, "r");
-	if (!tmp_save_file)
-	{
-		fprintf(stderr, "Impossible de lire le fichier sauvegarde...\n");
-		fclose(tmp_save_file);
-		return 0;
-	}
+    tmp_save_file = fopen(save_file, "r");
+    if (!tmp_save_file)
+    {
+        fprintf(stderr, "Impossible de lire le fichier sauvegarde...\n");
+        fclose(tmp_save_file);
+        return 0;
+    }
 
-	i = 0;
-	b_count = 14; n_count = 14;
-	while((buffer = fgetc(tmp_save_file)) != EOF)
-	{
-		if (i == 0)
-		{
-			if (buffer != 'B' && buffer != 'N')
-			{
-				fprintf(stderr, "Le premier caractère ne correspond pas à une couleur...\n");
-				fclose(tmp_save_file);
-				return 0;
-			}
-		}
-		else if (i == 1 || i == 2)
-		{
-			if (buffer < 0 || buffer > 6)
-			{
-				fprintf(stderr, "Le caractère n°%d ne se situe pas entre 0 et 6...\n", i);
-				fclose(tmp_save_file);
-				return 0;
-			}
+    i = 0;
+    b_count = 14; n_count = 14;
+    while((buffer = fgetc(tmp_save_file)) != EOF)
+    {
+        if (i == 0)
+        {
+            if (buffer != 'B' && buffer != 'N')
+            {
+                fprintf(stderr, "Le premier caractère ne correspond pas à une couleur...\n");
+                fclose(tmp_save_file);
+                return 0;
+            }
+        }
+        else if (i == 1 || i == 2)
+        {
+            if (buffer < 0 || buffer > 6)
+            {
+                fprintf(stderr, "Le caractère n°%d ne se situe pas entre 0 et 6...\n", i);
+                fclose(tmp_save_file);
+                return 0;
+            }
 
-			if (i == 1)
-				b_count -= buffer;
-			else
-				n_count -= buffer;
-		}
-		else
-		{
-			if (buffer != 'N' && buffer != 'B' && buffer != '.')
-			{
-				fprintf(stderr, "Le caractère n°%d ne correspond à aucune logique du plateau (B, N, .) ...\n", i);
-				fclose(tmp_save_file);
-				return 0;
-			}
+            if (i == 1)
+                b_count -= buffer;
+            else
+                n_count -= buffer;
+        }
+        else
+        {
+            if (buffer != 'N' && buffer != 'B' && buffer != '.')
+            {
+                fprintf(stderr, "Le caractère n°%d ne correspond à aucune logique du plateau (B, N, .) ...\n", i);
+                fclose(tmp_save_file);
+                return 0;
+            }
 
-			if (buffer == 'N')
-				n_count -= 1;
-			if (buffer == 'B')
-				b_count -= 1;
-		}
+            if (buffer == 'N')
+                n_count -= 1;
+            if (buffer == 'B')
+                b_count -= 1;
+        }
 
-		i++;
-	}
+        i++;
+    }
 
-	if (i < 63)
-	{
-		fprintf(stderr, "Nombre insuffisant de caractère : %d/63...\n", i);
-		fclose(tmp_save_file);
-		return 0;
-	}
-	if (n_count != 0)
-	{
-		fprintf(stderr, "Nombre de billes noires erronnées... (Nombre : %d)\n", n_count);
-		fclose(tmp_save_file);
-		return 0;
-	}
-	if (b_count != 0)
-	{
-		fprintf(stderr, "Nombre de billes blanches erronnées... (Nombre : %d)\n", b_count);
-		fclose(tmp_save_file);
-		return 0;
-	}
+    if (i < 63)
+    {
+        fprintf(stderr, "Nombre insuffisant de caractère : %d/63...\n", i);
+        fclose(tmp_save_file);
+        return 0;
+    }
+    if (n_count != 0)
+    {
+        fprintf(stderr, "Nombre de billes noires erronnées... (Nombre : %d)\n", n_count);
+        fclose(tmp_save_file);
+        return 0;
+    }
+    if (b_count != 0)
+    {
+        fprintf(stderr, "Nombre de billes blanches erronnées... (Nombre : %d)\n", b_count);
+        fclose(tmp_save_file);
+        return 0;
+    }
 
-	fclose(tmp_save_file);
-	return 1;
+    fclose(tmp_save_file);
+    return 1;
 }
 
 void read_file_to_load_game(board *b, player *new_player, const char *filename)
 {
-	FILE *save_file; 
-	int i, pos_in_tab;
+    FILE *save_file; 
+    int i, pos_in_tab;
 		
-	if (!first_read(filename))
-		return;
+    if (!first_read(filename))
+        return;
 
-	save_file = fopen(filename, "r");
-	if (!save_file)
-	{
-		fprintf(stderr, "Impossible de lire le fichier...\n");
-		fclose(save_file);
-		return;
-	}
+    save_file = fopen(filename, "r");
+    if (!save_file)
+    {
+        fprintf(stderr, "Impossible de lire le fichier...\n");
+        fclose(save_file);
+        return;
+    }
 
-	*new_player = fgetc(save_file);
-	b->ejected_marble_B = fgetc(save_file);
-	b->ejected_marble_N = fgetc(save_file);
+    *new_player = fgetc(save_file);
+    b->ejected_marble_B = fgetc(save_file);
+    b->ejected_marble_N = fgetc(save_file);
 
-	i = 0; 
-	pos_in_tab = 0;
-	for(; i < 5; i++)
-		b->tab[0][pos_in_tab++] = fgetc(save_file);
+    i = 0; 
+    pos_in_tab = 0;
+    for(; i < 5; i++)
+        b->tab[0][pos_in_tab++] = fgetc(save_file);
 
-	pos_in_tab = 0;
-	for(; i	< 11; i++)
-		b->tab[1][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 0;
+    for(; i	< 11; i++)
+        b->tab[1][pos_in_tab++] = fgetc(save_file);
 
-	pos_in_tab = 0;
-	for(; i < 18; i++)
-		b->tab[2][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 0;
+    for(; i < 18; i++)
+        b->tab[2][pos_in_tab++] = fgetc(save_file);
 	
-	pos_in_tab = 0;
-	for(; i < 26; i++)
-		b->tab[3][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 0;
+    for(; i < 26; i++)
+        b->tab[3][pos_in_tab++] = fgetc(save_file);
 	
-	pos_in_tab = 0;
-	for(; i < 35; i++)
-		b->tab[4][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 0;
+    for(; i < 35; i++)
+        b->tab[4][pos_in_tab++] = fgetc(save_file);
 
-	pos_in_tab = 1;
-	for(; i < 43; i++)
-		b->tab[5][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 1;
+    for(; i < 43; i++)
+        b->tab[5][pos_in_tab++] = fgetc(save_file);
 	
-	pos_in_tab = 2;
-	for(; i < 50; i++)
-		b->tab[6][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 2;
+    for(; i < 50; i++)
+        b->tab[6][pos_in_tab++] = fgetc(save_file);
 	
-	pos_in_tab = 3;
-	for(; i < 56; i++)
-		b->tab[7][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 3;
+    for(; i < 56; i++)
+        b->tab[7][pos_in_tab++] = fgetc(save_file);
 	
-	pos_in_tab = 4;
-	for(; i < 61; i++)
-		b->tab[8][pos_in_tab++] = fgetc(save_file);
+    pos_in_tab = 4;
+    for(; i < 61; i++)
+        b->tab[8][pos_in_tab++] = fgetc(save_file);
 }
 
 int save_game(char next_player, board *b)
 {
-	int i, j;
-	FILE *save_file;
-	char *filename, *complete_path;
-	char *incomplete_path = "../savefile/";
+    int i, j;
+    FILE *save_file;
+    char *filename, *complete_path;
+    char *incomplete_path = "../savefile/";
 	
-	fprintf(stdout, "La partie va être sauvegardée...\nChoisisez un nom de fichier (20 caractères maximum) : ");
-	filename = malloc(21 * sizeof(char));
-	complete_path = malloc(33 * sizeof(char));
+    fprintf(stdout, "La partie va être sauvegardée...\nChoisisez un nom de fichier (20 caractères maximum) : ");
+    filename = malloc(21 * sizeof(char));
+    complete_path = malloc(33 * sizeof(char));
 
-	if (filename)
-	{
-		fscanf(stdin, "%20s", filename); 
-		*(filename + 20) = '\0';
-	}
-	else
-	{
-		fprintf(stderr, "Erreur dans la création de la sauvegarde...\n");
-		free(filename); free(complete_path);
-		return -1;
-	}
+    if (filename)
+    {
+        fscanf(stdin, "%20s", filename); 
+        *(filename + 20) = '\0';
+    }
+    else
+    {
+        fprintf(stderr, "Erreur dans la création de la sauvegarde...\n");
+        free(filename); free(complete_path);
+        return -1;
+    }
 
-	strcpy(complete_path, incomplete_path);
-	strcat(complete_path, filename);
+    strcpy(complete_path, incomplete_path);
+    strcat(complete_path, filename);
 
-	save_file = fopen(filename, "w");
-	if (!save_file)
-	{
-		fprintf(stderr, "Impossible de créer le fichier de sauvegarde... %s\n", complete_path);
-		free(filename); free(complete_path);
-		fclose(save_file);
-		return -1;
-	}
+    save_file = fopen(filename, "w");
+    if (!save_file)
+    {
+        fprintf(stderr, "Impossible de créer le fichier de sauvegarde... %s\n", complete_path);
+        free(filename); free(complete_path);
+        fclose(save_file);
+        return -1;
+    }
 
-	fputc(next_player, save_file);
-	fputc(b->ejected_marble_B, save_file);
-	fputc(b->ejected_marble_N, save_file);
+    fputc(next_player, save_file);
+    fputc(b->ejected_marble_B, save_file);
+    fputc(b->ejected_marble_N, save_file);
 
-	for (i = 0; i < BOARD_LENGTH; i++)
-	{
-		for(j = 0; j < BOARD_LENGTH; j++)
-		{
-			if (b->tab[i][j] != '0')
-				fputc(b->tab[i][j], save_file);
-		}
-	}
+    for (i = 0; i < BOARD_LENGTH; i++)
+    {
+        for(j = 0; j < BOARD_LENGTH; j++)
+        {
+            if (b->tab[i][j] != '0')
+                fputc(b->tab[i][j], save_file);
+        }
+    }
 
-	free(filename); free(complete_path);
-	fclose(save_file);
-	return 1;
+    free(filename); free(complete_path);
+    fclose(save_file);
+    return 1;
 }
 
 int command_validation(const char *command)
