@@ -145,7 +145,7 @@ int save_game(char next_player, board *b)
     int i, j;
     FILE *save_file;
     char *filename, *complete_path;
-    char *incomplete_path = "../savefile/";
+    char *incomplete_path = "savefile/";
 	
     fprintf(stdout, "La partie va être sauvegardée...\nChoisisez un nom de fichier (20 caractères maximum) : ");
     filename = malloc(21 * sizeof(char));
@@ -166,7 +166,7 @@ int save_game(char next_player, board *b)
     strcpy(complete_path, incomplete_path);
     strcat(complete_path, filename);
 
-    save_file = fopen(filename, "w");
+    save_file = fopen(complete_path, "w");
     if (!save_file)
     {
         fprintf(stderr, "Impossible de créer le fichier de sauvegarde... %s\n", complete_path);

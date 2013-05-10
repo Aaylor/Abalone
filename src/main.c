@@ -67,6 +67,11 @@ int main(int argc, char **argv)
     int player_b = H_PLAYER, player_n = H_PLAYER, test_mode = 0, load_game = 0;
     char *filename;
 
+    if (strncmp(*argv, "./bin", 5) != 0)
+    {
+        chdir("..");
+    }
+   
     srand(time(NULL));
     
     parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
