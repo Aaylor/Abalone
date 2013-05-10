@@ -66,8 +66,8 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
 
 int main(int argc, char **argv)
 {
-    int player_b = H_PLAYER, player_n = H_PLAYER, test_mode = 0, load_game = 0;
     char *filename;
+    int player_b = H_PLAYER, player_n = H_PLAYER, test_mode = 0, load_game = 0;
 
     if (strncmp(*argv, "./bin", 5) == 0)
         BIN_FOLDER = 0;
