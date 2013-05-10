@@ -1,6 +1,7 @@
 #ifndef H_GAME
 #define H_GAME
 
+#include <unistd.h>
 #include <regex.h>
 
 #include "utility.h"
@@ -19,7 +20,7 @@
 
 int first_read(const char *);
 
-void read_file_to_load_game(board *, player *, const char *);
+int read_file_to_load_game(board *, player *, const char *);
 
 int save_game(char, board *);
 

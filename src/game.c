@@ -10,7 +10,6 @@ int first_read(const char *save_file)
     if (!tmp_save_file)
     {
         fprintf(stderr, "Impossible de lire le fichier sauvegarde...\n");
-        fclose(tmp_save_file);
         return 0;
     }
 
@@ -82,20 +81,19 @@ int first_read(const char *save_file)
     return 1;
 }
 
-void read_file_to_load_game(board *b, player *new_player, const char *filename)
+int read_file_to_load_game(board *b, player *new_player, const char *filename)
 {
     FILE *save_file; 
     int i, pos_in_tab;
 		
     if (!first_read(filename))
-        return;
+        return 0;
 
     save_file = fopen(filename, "r");
     if (!save_file)
     {
         fprintf(stderr, "Impossible de lire le fichier...\n");
-        fclose(save_file);
-        return;
+        return 0;
     }
 
     *new_player = fgetc(save_file);
@@ -138,15 +136,22 @@ void read_file_to_load_game(board *b, player *new_player, const char *filename)
     pos_in_tab = 4;
     for(; i < 61; i++)
         b->tab[8][pos_in_tab++] = fgetc(save_file);
+
+    return 1;
 }
 
 int save_game(char next_player, board *b)
 {
     int i, j;
+    extern int BIN_FOLDER;
     FILE *save_file;
     char *filename, *complete_path;
     char *incomplete_path = "savefile/";
-	
+   
+
+    if (BIN_FOLDER)
+        chdir("..");
+    
     fprintf(stdout, "La partie va être sauvegardée...\nChoisisez un nom de fichier (20 caractères maximum) : ");
     filename = malloc(21 * sizeof(char));
     complete_path = malloc(33 * sizeof(char));
@@ -187,6 +192,9 @@ int save_game(char next_player, board *b)
                 fputc(b->tab[i][j], save_file);
         }
     }
+    
+    if (BIN_FOLDER)
+        chdir("bin");
 
     free(filename); free(complete_path);
     fclose(save_file);
@@ -402,16 +410,21 @@ void end_game(char **command)
 int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_game, char *filename)
 {
     board   game_board, last_game_board;
-    char    flush;
-	char    *command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
-    int     coup = 1, undo = 0, redo = 0;
+    char    flush, *command;
+    int     coup, undo, redo;
     player	current_player = 'B';
 
 	game_board = create_new_board();
     if (load_game)
     {
-		read_file_to_load_game(&game_board, &current_player, filename);
+		if (!read_file_to_load_game(&game_board, &current_player, filename))
+            return 1;
     }
+	
+    coup    = 1;
+    undo    = 0;
+    redo    = 0;
+    command = malloc((CMD_MAX_SIZE + 1) * sizeof(char));
 
     display_board(&game_board);
     while( 1 )
@@ -545,7 +558,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 			undo = 1; redo = 0;
 			current_player = change_player(current_player);
             do_move(&game_board, ai_move);
-  /*              free_p_move(ai_move); ai_move = NULL; */
+            free_p_move(ai_move); ai_move = NULL;
         }
 
         display_board(&game_board);
@@ -554,19 +567,18 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         if (state < 0)
         {
             fprintf(stdout, "NOIR WIN\n");
-            return 1;
+            break;
         }
         if (state > 0)
         {
             fprintf(stdout, "BLANC WIN\n");
-            return 1;
+            break;
         }
 
         coup++;
     }
    
     free(command); command = NULL;
-
     return 0;
 }
 

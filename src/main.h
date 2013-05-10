@@ -1,8 +1,6 @@
 #ifndef H_MAIN
 #define H_MAIN
 
-#include <unistd.h>
-
 #include "utility.h"
 #include "game.h"
 
