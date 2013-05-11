@@ -15,7 +15,7 @@ int first_read(const char *save_file)
 
     i = 0;
     b_count = 14; n_count = 14;
-    while((buffer = fgetc(tmp_save_file)) != EOF)
+    while((buffer = fgetc(tmp_save_file)) != EOF && buffer != '\n')
     {
         if (i == 0)
         {
