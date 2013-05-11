@@ -393,7 +393,6 @@ void free_p_move(p_move *move)
 
 int game_state(board *b)
 {
-    fprintf(stdout, "b %d - n %d\n", b->ejected_marble_B, b->ejected_marble_N);
     if (b->ejected_marble_N >= 6)
         return 1;
     if (b->ejected_marble_B >= 6)
@@ -555,6 +554,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             free_p_move(ai_move); ai_move = NULL;
         }
 
+        fprintf(stdout, "\n\n");
         display_board(&game_board);
         
         state = game_state(&game_board);

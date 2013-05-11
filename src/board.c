@@ -95,6 +95,7 @@ void display_board(board *b){
   printf("\t       ------------ 6\t\t\n\t           1 2 3 4 5\t\t");
   set_colot_text("0");
   putchar('\n');
+  fprintf(stdout, "Pions hors du plateau.\nBlanc : %d\tNoir : %d\n", b->ejected_marble_B, b->ejected_marble_N);
 }
 
 /* min_col renvoie le numero de l'element minimal de la ligne l (la numero, pas l'indice de tab) */
