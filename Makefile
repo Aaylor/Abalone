@@ -19,4 +19,5 @@ rclean:
 	rm -f bin/abalone
 
 ngame:
+	make
 	./bin/abalone
