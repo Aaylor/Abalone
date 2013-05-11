@@ -5,6 +5,7 @@ int BIN_FOLDER = 1;
 int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *test_mode, int *load_game, char **filename)
 {
     int position;
+    int player_option = 0;
     for (position = 1; position < argc; position++)
     {
         if (str_cmp(*(argv + position), "-B") || str_cmp(*(argv + position), "-N"))
@@ -17,12 +18,18 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                 fprintf(stderr, "Mauvais argument après l'argument -%c...\n", c);
                 return 0;
             }
+            else if (*test_mode)
+            {
+                fprintf(stderr, "Les arguments `-B|-N` sont incompatibles avec l'argument `-t`...\n)");
+                return 0;
+            }
             else if (str_cmp(*(argv + position), "ai"))
             {
                 if (c == 'B')
                     *player_b = VERY_EASY_AI;
                 else
                     *player_n = VERY_EASY_AI;
+                player_option = 1;
             }
             else if (str_cmp(*(argv + position), "human"))
             {
@@ -30,6 +37,7 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                     *player_b = H_PLAYER;
                 else
                     *player_n = H_PLAYER;
+                player_option = 1;
             }
             else
             {
@@ -39,6 +47,11 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
         }
         else if (str_cmp(*(argv + position), "-t"))
         {
+            if (player_option)
+            {
+                fprintf(stderr, "Les arguments `-B|-N` sont incompatibles avec l'argument `-t`...\n)");
+                return 0;
+            }
             *test_mode = 1;
         }
         else if (str_cmp(*(argv + position), "-c"))
@@ -69,7 +82,11 @@ int main(int argc, char **argv)
 
     srand(time(NULL));
     
-    parse_arguments(argc, argv, &player_b, &player_n, &test_mode, &load_game, &filename);
+    if ( !parse_arguments(  argc, argv, &player_b, &player_n, 
+                            &test_mode, &load_game, &filename) )
+    {
+        return EXIT_FAILURE;
+    }
 
     play_game(player_b, player_n, test_mode, load_game, filename);
     return EXIT_SUCCESS;
