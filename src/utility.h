@@ -28,7 +28,7 @@
 
 #define H_PLAYER    0x000000f
 #define VERY_EASY_AI     0x00000f0
-#define EASY_AI   0x0000f00
+
 /*
  *  Give the int value associated to the character to match to keys of the
  *  board.tab
@@ -56,8 +56,14 @@
  */
 #define str_cmp(s1,s2) (strcmp(s1,s2) == 0)
 
+/*
+ *  Return a random number, to chose random move for ai.
+ */
 #define get_random_num(max) (rand()%max)
 
+/*
+ *  Set the color text.
+ */
 #define set_colot_text(param) printf("\033[%sm",param)
 
 typedef struct

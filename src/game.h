@@ -18,10 +18,20 @@
 
 #define change_player(cur) (cur == 'B' ? 'N' : 'B')
 
+/*
+ *  Function use to read the save file, to see if there is any problem with it
+ *  (incorrect count of marbles, incorrect syntax, ...)
+ */
 int first_read(const char *);
 
+/*
+ *  Function which load the game.
+ */
 int read_file_to_load_game(board *, player *, const char *);
 
+/*
+ *  Function to save the game.
+ */
 int save_game(char, board *);
 
 /*
@@ -56,6 +66,9 @@ int play_game(int, int, int, int, char *);
  */
 void free_p_move(p_move *);
 
+/*
+ *  Return the state of game (if there is any player who won or not).
+ */
 int game_state(board *);
 
 /*

@@ -6,8 +6,8 @@
 #include "utility.h"
 
 void    free_array(p_move *, int, p_move *);
+int     get_ponderation_value(p_move *);
 p_move  *random_move(board *, player);
-int get_ponderation_value(p_move *);
 p_move  *easy_ai(board *, player);
 
 #endif
