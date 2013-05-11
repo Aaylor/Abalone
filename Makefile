@@ -1,6 +1,6 @@
 SOURCES=src/ai.c src/board.c src/game.c src/main.c
 OBJECTS=$(SOURCES:.c=.o)
-CFLAGS= -std=c89 -Wall -Wextra -pedantic -ansi -g
+CFLAGS= -std=c89 -Wall -Wextra -pedantic -ansi
 EXECFOLDER=bin
 EXECUTABLE=bin/abalone
 
