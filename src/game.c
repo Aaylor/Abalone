@@ -58,9 +58,9 @@ int first_read(const char *save_file)
         i++;
     }
 
-    if (i < 63)
+    if (i != 64)
     {
-        fprintf(stderr, "Nombre insuffisant de caractère : %d/63...\n", i);
+        fprintf(stderr, "Nombre erronné de caractère : %d/64...\n", i);
         fclose(tmp_save_file);
         return 0;
     }
