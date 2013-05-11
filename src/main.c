@@ -4,7 +4,7 @@ int BIN_FOLDER = 1;
 
 int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *test_mode, int *load_game, char **filename)
 {
-    int position = 0;
+    int position;
     for (position = 1; position < argc; position++)
     {
         if (str_cmp(*(argv + position), "-B") || str_cmp(*(argv + position), "-N"))
@@ -14,7 +14,7 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
 
             if (position >= argc)
             {
-                fprintf(stderr, "Bad argument after -%c...\n", c);
+                fprintf(stderr, "Mauvais argument après l'argument -%c...\n", c);
                 return 0;
             }
             else if (str_cmp(*(argv + position), "ai"))
@@ -33,18 +33,20 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
             }
             else
             {
-                fprintf(stderr, "Bad argument after -%c...\n", c);
+                fprintf(stderr, "Mauvais argument après l'argument -%c...\n", c);
                 return 0;
             }
         }
         else if (str_cmp(*(argv + position), "-t"))
+        {
             *test_mode = 1;
+        }
         else if (str_cmp(*(argv + position), "-c"))
         {
             position++;
             if (position >= argc)
             {
-                fprintf(stderr, "Bad argument after -c...\n");
+                fprintf(stderr, "Mauvais argument après l'argument -c...\n");
                 return 0;
             }
             *load_game = 1;
@@ -52,7 +54,7 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                 fprintf(stderr, "Erreur dans la copie...\n");
         }
         else
-            fprintf(stderr, "Unknown argument : %s\n", *(argv + position));
+            fprintf(stderr, "Argument inconnu : %s\n", *(argv + position));
     }
     return 1;
 }

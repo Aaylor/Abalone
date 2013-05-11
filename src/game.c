@@ -240,10 +240,9 @@ char **split_command(char *command, int *command_length)
     token = strtok(tmp_command, "-");
     if (token)
     {
-        /*
+        
         if ((*(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token)) == NULL)
-            fprintf(stderr, "Erreur dans la copie du token...\n"); */
-        *(splitted_command + i) = strcpy(malloc((strlen(token) + 1) * sizeof(char)), token);
+            fprintf(stderr, "Erreur dans la copie du token...\n");
         i++;
     }
     while ((token = strtok(NULL, "-")) != NULL)
@@ -469,7 +468,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 				}
 				else
 				{
-					fprintf(stderr, "Undo unavailable...\n");
+					fprintf(stderr, "Impossible d'effectuer la fonction `undo`...\n");
 					continue;
 				}
 			}
@@ -491,7 +490,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 				}
 				else
 				{
-					fprintf(stderr, "Redo unavailable...\n");
+					fprintf(stderr, "Impossible d'effectuer la fonction `redo`...\n");
 					continue;
 				}
 			}
@@ -503,7 +502,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 			}
             else if (!command_validation(command))
             {
-                fprintf(stderr, "WRONG COMMAND, PLAY AGAIN\n");
+                fprintf(stderr, "Commande impossible, veuillez rejouer...\n");
                 continue;
             }
             else
@@ -531,7 +530,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                     else
                     {
                         display_error_message(m_return);
-                        fprintf(stderr, "TEST MODE WILL EXIT...\n");
+                        fprintf(stderr, "Le mode test va maintenant se fermer...\n");
                         return 1;
                     }
                 }
@@ -548,7 +547,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
                 ai_move = random_move(&game_board, current_player);
             }
             
-            fprintf(stdout, "#%d IA played\n", coup);
+            fprintf(stdout, "#%d L'IA a joué.\n", coup);
 			last_game_board = game_board; 
 			undo = 1; redo = 0;
 			current_player = change_player(current_player);
@@ -561,12 +560,12 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
         state = game_state(&game_board);
         if (state < 0)
         {
-            fprintf(stdout, "NOIR WIN\n");
+            fprintf(stdout, "Le joueur noir a gagné !\n");
             break;
         }
         if (state > 0)
         {
-            fprintf(stdout, "BLANC WIN\n");
+            fprintf(stdout, "Le joueur blanc a gagné !\n");
             break;
         }
 
