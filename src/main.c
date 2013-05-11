@@ -17,21 +17,14 @@ int parse_arguments(int argc, char **argv, int *player_b, int *player_n, int *te
                 fprintf(stderr, "Bad argument after -%c...\n", c);
                 return 0;
             }
-            else if (str_cmp(*(argv + position), "robot"))
+            else if (str_cmp(*(argv + position), "ai"))
             {
                 if (c == 'B')
                     *player_b = VERY_EASY_AI;
                 else
                     *player_n = VERY_EASY_AI;
             }
-            else if (str_cmp(*(argv + position), "robot2"))
-            {
-                if (c == 'B')
-                    *player_b = EASY_AI;
-                else
-                    *player_n = EASY_AI;
-            }
-            else if (str_cmp(*(argv + position), "humain"))
+            else if (str_cmp(*(argv + position), "human"))
             {
                 if (c == 'B')
                     *player_b = H_PLAYER;

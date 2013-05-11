@@ -411,7 +411,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 {
     board   game_board, last_game_board;
     char    flush, *command;
-    int     coup, undo, redo;
+    int     coup, undo, redo, state;
     player	current_player = 'B';
 
 	game_board = create_new_board();
@@ -547,11 +547,6 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
             {
                 ai_move = random_move(&game_board, current_player);
             }
-            if ( (current_player == 'B' && (b_player_statut & EASY_AI)) ||
-                 (current_player == 'N' && (n_player_statut & EASY_AI)) )
-            {
-                ai_move = easy_ai(&game_board, current_player);
-            }
             
             fprintf(stdout, "#%d IA played\n", coup);
 			last_game_board = game_board; 
@@ -563,7 +558,7 @@ int play_game(int b_player_statut, int n_player_statut, int test_mode, int load_
 
         display_board(&game_board);
         
-        int state = game_state(&game_board);
+        state = game_state(&game_board);
         if (state < 0)
         {
             fprintf(stdout, "NOIR WIN\n");

@@ -325,18 +325,20 @@ int what_marble_does_move_ejects(board *b, p_move* commande){
 
 /*Effectue le mouvement decrit par le tableau tabMove EN CONSIDERANT QU'IL EST POSSIBLE*/
 void do_move(board *b, p_move* commande){
+    int tabLen, j, variationX, variationY;
+    char **tabMove;
   /*Avant d'effectuer le mouvement, on va verifier si une bille sera ejectee puis mettre a jouer les variable de billes ejectee*/
   if(what_marble_does_move_ejects(b, commande) == 'B')
     (b->ejected_marble_B)++;
   else if (what_marble_does_move_ejects(b, commande) == 'N')
     (b->ejected_marble_N)++;    
   /*Mouvement*/
-  int tabLen = commande->length;
-  char **tabMove = commande->squares;
+  tabLen = commande->length;
+  tabMove = commande->squares;
   /*On va proceder a une simple substitution des case de la case de depart a la prochaine case vide*/
-  int j;
   /*Calcul de la direction du mouvement*/
-  int variationX = tabMove[tabLen/2][1] - tabMove[0][1], variationY = tabMove[tabLen/2][0] - tabMove[0][0];
+    variationX = tabMove[tabLen/2][1] - tabMove[0][1];
+    variationY = tabMove[tabLen/2][0] - tabMove[0][0];
   /*Toutes les casesde depart son successivement geree*/
   for (j=0; j < tabLen/2; j++){
     int originY = c_to_key(tabMove[j][0]), originX =  tabMove[j][1] - '1';
