@@ -1,6 +1,9 @@
 PROJET_LC4
 ==========
 
+Projet rendu le 12 Mai 2013, par Khelifi Mehdi et Runarvot Loïc.  
+
+
 Compilation du projet :
 `make`
 
